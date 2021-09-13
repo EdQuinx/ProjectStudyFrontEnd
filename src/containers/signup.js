@@ -18,7 +18,7 @@ const SignUp = (props) => {
                 props.loading ?
                     <Spin size="large" />
                     :
-                    props.isAuthenticated ?
+                    !props.isAuthenticated ?
                         <div className="signuppanel">
 
                             <div className="row">
