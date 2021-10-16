@@ -1,16 +1,18 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { site_name } from '../api'
 
 
 const PageHeader = (props) => {
 
     return (
         <div className="pageheader">
-            <h2><i className="fa fa-home"></i> Dashboard <span>Subtitle goes here...</span></h2>
+            <h2><i className={`fa ${props.icon?props.icon:"fa-home"}`}></i> {props.page ? props.page : "Study group"} <span>{props.subtitle ? props.subtitle : "..."}</span></h2>
             <div className="breadcrumb-wrapper">
-                <span className="label">You are here:</span>
+                <span className="label">Đang ở:</span>
                 <ol className="breadcrumb">
-                    <li><a href="index.html">Bracket</a></li>
-                    <li className="active">Dashboard</li>
+                    <li><Link to="/">{site_name}</Link></li>
+                    <li className="active">{props.page ? props.page : "Study group"}</li>
                 </ol>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { site_name } from '../api'
 import Footer from '../components/footer'
@@ -6,11 +6,18 @@ import Footer from '../components/footer'
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 
-import { Button, Form, Input, Select, Spin } from 'antd'
+import { Button, Form, Input, Select, Spin, message } from 'antd'
 
 const SignUp = (props) => {
 
     const [regForm] = Form.useForm()
+
+    useEffect(() => {
+        if (props.error)
+        {
+            message.error(props.error?.msg)
+        }
+    }, [props.error]);
 
     return (
         <React.Fragment>
@@ -33,29 +40,25 @@ const SignUp = (props) => {
                                         <div className="mb20"></div>
 
                                         <h5><strong>{site_name}!</strong></h5>
-                                        <p>Bracket is a theme that is perfect if you want to create your own content management, monitoring or any other system for your project.</p>
-                                        <p>Below are some of the benefits you can have when purchasing this template.</p>
+                                        <p>Trang web hỗ trợ tìm nhóm và giúp đỡ ôn tập, học tập.</p>
                                         <div className="mb20"></div>
 
                                         <div className="feat-list">
                                             <i className="fa fa-wrench"></i>
-                                            <h4 className="text-success">Easy to Customize</h4>
-                                            <p>Bracket is made using Bootstrap 3 so you can easily customize any element of this template following the structure of Bootstrap 3.</p>
+                                            <h4 className="text-success">Đăng ký dễ dàng</h4>
                                         </div>
 
                                         <div className="feat-list">
                                             <i className="fa fa-compress"></i>
-                                            <h4 className="text-success">Fully Responsive Layout</h4>
-                                            <p>Bracket is design to fit on all browser widths and all resolutions on all mobile devices. Try to scale your browser and see the results.</p>
+                                            <h4 className="text-success">Đông đảo thành viên sử dụng</h4>
                                         </div>
 
                                         <div className="feat-list mb20">
                                             <i className="fa fa-search-plus"></i>
-                                            <h4 className="text-success">Retina Ready</h4>
-                                            <p>When a user load a page, a script checks each image on the page to see if there's a high-res version of that image. If a high-res exists, the script will swap that image in place.</p>
+                                            <h4 className="text-success">Hỗ trợ nhanh chóng</h4>
                                         </div>
 
-                                        <h4 className="mb20">and much more...</h4>
+                                        <h4 className="mb20">và nhiều hơn nữa...</h4>
 
                                     </div>
 
@@ -63,20 +66,24 @@ const SignUp = (props) => {
 
                                 <div className="col-md-6">
 
-                                    <Form form={regForm} layout="vertical" onFinish={(e) => props.authSignup(e.fullname, e.username, e.email, e.password, e.gender, e.class, [], [])}>
+                                    <Form form={regForm} layout="vertical" onFinish={(e) => props.authSignup(e.fullname, e.username, e.email, e.password, e.confirmPassword, e.gender, e.class, [], [])}>
 
-                                        <h3 className="nomargin">Sign Up</h3>
-                                        <p className="mt5 mb20">Already a member? <Link to="/signin"><strong>Sign In</strong></Link></p>
+                                        <h3 className="nomargin">Đăng ký</h3>
+                                        <p className="mt5 mb20">Đã có tài khoản? <Link to="/signin"><strong>Đăng nhập</strong></Link></p>
 
-                                        <Form.Item name="fullname" label="Full Name" rules={[{ required: true, message: 'Missing full name' }]}>
+                                        <Form.Item name="fullname" label="Họ và tên" rules={[{ required: true, message: 'Missing full name' }]}>
                                             <Input />
                                         </Form.Item>
 
-                                        <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Missing username' }]}>
+                                        <Form.Item name="username" label="Tài khoản" rules={[{ required: true, message: 'Missing username' }]}>
                                             <Input />
                                         </Form.Item>
 
-                                        <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Missing password' }]}>
+                                        <Form.Item name="password" label="Mật khẩu" rules={[{ required: true, message: 'Missing password' }]}>
+                                            <Input type="password" />
+                                        </Form.Item>
+                                        {/* confirmPassword */}
+                                        <Form.Item name="confirmPassword" label="Xác thực mật khẩu" rules={[{ required: true, message: 'Missing confirm password' }]}>
                                             <Input type="password" />
                                         </Form.Item>
 
@@ -84,19 +91,19 @@ const SignUp = (props) => {
                                             <Input />
                                         </Form.Item>
 
-                                        <Form.Item name="gender" label="Gender" rules={[{ required: true, message: 'Missing gender' }]}>
+                                        <Form.Item name="gender" label="Giới tính" rules={[{ required: true, message: 'Missing gender' }]}>
                                             <Select placeholder="Choose your gender">
-                                                <Select.Option value="male">Male</Select.Option>
-                                                <Select.Option value="female">Female</Select.Option>
+                                                <Select.Option value="male">Nam</Select.Option>
+                                                <Select.Option value="female">Nữ</Select.Option>
                                             </Select>
                                         </Form.Item>
 
-                                        <Form.Item name="class" label="Grade" rules={[{ required: true, message: 'Missing Grade' }]}>
+                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Missing Grade' }]}>
                                             <Input type="number" />
                                         </Form.Item>
 
                                         <Form.Item >
-                                            <Button type="primary" htmlType="submit">Sign Up</Button>
+                                            <Button type="primary" htmlType="submit">Đăng ký</Button>
                                         </Form.Item>
                                     </Form>
                                 </div>
@@ -129,7 +136,7 @@ const mapDispatchToProps = dispatch => {
         logout: () => dispatch(actions.logout()),
         updateChange: () => dispatch(actions.updateChange()),
         onAuth: (username, password) => dispatch(actions.authLogin(username, password)),
-        authSignup: (fullname, username, email, password, gender, classs, goodAt = [], badAt = []) => dispatch(actions.authSignup(fullname, username, email, password, gender, classs, goodAt = [], badAt = [])),
+        authSignup: (fullname, username, email, password, confirmPassword, gender, classs, goodAt = [], badAt = []) => dispatch(actions.authSignup(fullname, username, email, password, confirmPassword, gender, classs, goodAt = [], badAt = [])),
     }
 }
 

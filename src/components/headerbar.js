@@ -1,7 +1,12 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
+import * as api from '../api'
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import * as actions from '../store/actions/auth';
+import { Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 
 const HeaderBar = (props) => {
     const [usermenu, setUsermenu] = useState(false)
@@ -13,10 +18,10 @@ const HeaderBar = (props) => {
     return (
         <div className="headerbar">
 
-            <a className="menutoggle"><i className="fa fa-bars"></i></a>
+            <a className="menutoggle" onClick={() => props.oncolapseleftmn(!props.colapseleftmn)}><i className="fa fa-bars"></i></a>
 
             <form className="searchform">
-                <input type="text" className="form-control" name="keyword" placeholder="Search here..." />
+                <input type="text" className="form-control" name="keyword" placeholder="Tìm kiếm..." />
             </form>
 
             <div className="header-right">
@@ -65,6 +70,7 @@ const HeaderBar = (props) => {
                             </div>
                         </div>
                     </li>
+                    
                     <li>
                         <div className="btn-group">
                             <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
@@ -124,6 +130,7 @@ const HeaderBar = (props) => {
                             </div>
                         </div>
                     </li>
+                    
                     <li>
                         <div className="btn-group">
                             <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
@@ -184,17 +191,18 @@ const HeaderBar = (props) => {
                         </div>
                     </li>
                     <li>
+                    
                     <div className={usermenu ? "btn-group open" : "btn-group"}>
                             <button type="button" className="btn btn-default dropdown-toggle" onClick={() => setUsermenu(!usermenu)}>
-                                <img src={`${process.env.PUBLIC_URL}/static/images/photos/loggeduser.png`} alt="" />
-                                John Doe
+                                <Avatar size={26} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
+                                { props.username ? props.username : "Loading ..."}
                                 <span className="caret"></span>
                             </button>
                             <ul className="dropdown-menu dropdown-menu-usermenu pull-right">
-                                <li><a><i className="glyphicon glyphicon-user"></i> My Profile</a></li>
-                                <li><a><i className="glyphicon glyphicon-cog"></i> Account Settings</a></li>
-                                <li><a><i className="glyphicon glyphicon-question-sign"></i> Help</a></li>
-                                <li><a onClick={handleLogout}><i className="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+                                <li><Link to="/profile"><i className="glyphicon glyphicon-user"></i> Thông tin tài khoản</Link></li>
+                                <li><Link to="/settings"><i className="glyphicon glyphicon-cog"></i> Cài đặt</Link></li>
+                                <li><Link to="/FAQ"><i className="glyphicon glyphicon-question-sign"></i> FAQ</Link></li>
+                                <li><a onClick={handleLogout}><i className="glyphicon glyphicon-log-out"></i> Đăng xuất</a></li>
                             </ul>
                         </div>
                     </li>
@@ -217,6 +225,7 @@ const mapStateToProps = state => {
         loading: state.loading,
         error: state.error,
         change: state.change,
+        username: state.username
     }
 }
 

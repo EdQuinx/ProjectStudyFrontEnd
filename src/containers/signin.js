@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from '../components/footer'
 import { Link } from 'react-router-dom'
 import { site_name } from '../api'
-import { Button, Form, Input, Spin } from 'antd'
+import { Button, Form, Input, Spin, message } from 'antd'
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 
 const SignIn = (props) => {
+
+    useEffect(() => {
+        if (props.error)
+        {
+            message.error(props.error?.msg)
+        }
+    }, [props.error])
 
     return (
         <React.Fragment>
@@ -27,16 +34,12 @@ const SignIn = (props) => {
 
                                     <div className="mb20"></div>
 
-                                    <h5><strong>Welcome to {site_name}</strong></h5>
+                                    <h5><strong>Chào mừng đến với {site_name}</strong></h5>
                                     <ul>
-                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> Fully Responsive Layout</li>
-                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> HTML5/CSS3 Valid</li>
-                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> Retina Ready</li>
-                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> WYSIWYG CKEditor</li>
-                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> and much more...</li>
+                                        <li><i className="fa fa-arrow-circle-o-right mr5"></i> Hỗ trợ học nhóm</li>
                                     </ul>
                                     <div className="mb20"></div>
-                                    <strong>Not a member? <Link to="/signup">Sign Up</Link></strong>
+                                    <strong>Chưa có tài khoản? <Link to="/signup">Đăng ký ngay</Link></strong>
                                 </div>
 
                             </div>
@@ -44,17 +47,17 @@ const SignIn = (props) => {
                             <div className="col-md-5">
 
                                 <Form onFinish={e => props.onAuth(e.username, e.password)}>
-                                    <h4 className="nomargin">Sign In</h4>
-                                    <p className="mt5 mb20">Login to access your account.</p>
+                                    <h4 className="nomargin">Đăng nhập</h4>
+                                    <p className="mt5 mb20">Đăng nhập để sử dụng {site_name}.</p>
                                     <Form.Item name="username">
                                         <Input type="text" className="form-control uname" placeholder="Username" />
                                     </Form.Item>
                                     <Form.Item name="password">
                                         <Input type="password" className="form-control pword" placeholder="Password" />
                                     </Form.Item>
-                                    <Link to="/forgot-pass"><small>Forgot Your Password?</small></Link>
+                                    <Link to="/forgot-pass"><small>Quên mật khẩu?</small></Link>
                                     <Form.Item>
-                                        <Button type="primary" htmlType="submit" className="btn btn-success btn-block">Sign In</Button>
+                                        <Button type="primary" htmlType="submit" className="btn btn-success btn-block">Đăng nhập</Button>
                                     </Form.Item>
                                 </Form>
                             </div>

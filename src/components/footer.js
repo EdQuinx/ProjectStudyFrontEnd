@@ -7,7 +7,7 @@ const Footer = (props) => {
     return (
         <div className="signup-footer">
             <div className="pull-left">
-                &copy; {new Date().getFullYear()}. All Rights Reserved. Quy Dep Trai Khoong bang Bao
+                &copy; {new Date().getFullYear()}. All Rights Reserved.
             </div>
             <div className="pull-right">
                 Created By: <Link to="/" >{site_name}</Link>

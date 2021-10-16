@@ -48,23 +48,34 @@ export const authLogin = (username, password) => {
             password: password
         })
         .then(res => {
-            const token = res.data.token;
-            console.log(token)
-            const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
-            localStorage.setItem('token', token);
-            localStorage.setItem('username', username);
-            localStorage.setItem('expirationDate', expirationDate);
-            dispatch(authSuccess(token, username));
-            dispatch(checkAuthTimeout(3600 * 24 * 7));
+            if ("token" in res.data)
+            {
+                const token = res.data.token;
+                const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', username);
+                localStorage.setItem('expirationDate', expirationDate);
+                dispatch(authSuccess(token, username));
+                dispatch(checkAuthTimeout(3600 * 24 * 7));
+            }
+            else {
+                if ("msg" in res.data)
+                {
+                    dispatch(authFail(res.data))
+                }
+                else {
+                    dispatch(authFail({ msg: "System error"}))
+                }
+            }
         })
         .catch(function (error) {
-            dispatch(authFail(error))
+            dispatch(authFail({ msg: "System error"}))
             console.log(error)
         })
     }
 }
 
-export const authSignup = (fullname, username, email, password, gender, classs, goodAt=[], badAt=[]) => {
+export const authSignup = (fullname, username, email, password, confirmPassword, gender, classs, goodAt=[], badAt=[]) => {
     return dispatch => {
         dispatch(authStart());
         axios.post(api.api_signup, {
@@ -72,23 +83,40 @@ export const authSignup = (fullname, username, email, password, gender, classs, 
             username: username,
             email: email,
             password: password,
+            confirmPassword: confirmPassword,
             gender: gender,
-            class: classs,
+            class: parseInt(classs),
             goodAt: goodAt,
             badAt: badAt,
-            isAdmin: false
+            groupIds: [],
+            isAdmin: false,
+            isConfirmMail: false
         })
         .then(res => {
-            const token = res.data.key;
-            const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
-            localStorage.setItem('token', token);
-            localStorage.setItem('username', username);
-            localStorage.setItem('expirationDate', expirationDate);
-            dispatch(authSuccess(token, username));
-            dispatch(checkAuthTimeout(3600 * 24 * 7));
+            // console.log(res.data)
+            console.log("token" in res.data)
+            if ("token" in res.data)
+            {
+                const token = res.data.token;
+                const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', username);
+                localStorage.setItem('expirationDate', expirationDate);
+                dispatch(authSuccess(token, username));
+                dispatch(checkAuthTimeout(3600 * 24 * 7));
+            }
+            else {
+                if ("msg" in res.data)
+                {
+                    dispatch(authFail(res.data))
+                }
+                else {
+                    dispatch(authFail({ msg: "System error"}))
+                }
+            }
         })
         .catch(function (error) {
-            dispatch(authFail(error))
+            dispatch(authFail({ msg: "System error"}))
         })
     }
 }
