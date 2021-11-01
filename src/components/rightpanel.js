@@ -1,6 +1,8 @@
 import React from 'react'
+import { useAppContext } from '../state'
 
 const RightPanel = (props) => {
+
     return (
         <div className="rightpanel">
             <ul className="nav nav-tabs nav-justified">

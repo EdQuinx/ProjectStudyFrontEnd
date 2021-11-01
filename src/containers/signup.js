@@ -16,6 +16,7 @@ const SignUp = (props) => {
         if (props.error)
         {
             message.error(props.error?.msg)
+            props.resetError()
         }
     }, [props.error]);
 
@@ -135,6 +136,7 @@ const mapDispatchToProps = dispatch => {
         onTryAutoSignup: () => dispatch(actions.authCheckState()),
         logout: () => dispatch(actions.logout()),
         updateChange: () => dispatch(actions.updateChange()),
+        resetError: () => dispatch(actions.errReset()),
         onAuth: (username, password) => dispatch(actions.authLogin(username, password)),
         authSignup: (fullname, username, email, password, confirmPassword, gender, classs, goodAt = [], badAt = []) => dispatch(actions.authSignup(fullname, username, email, password, confirmPassword, gender, classs, goodAt = [], badAt = [])),
     }

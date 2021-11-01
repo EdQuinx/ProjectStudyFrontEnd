@@ -2,13 +2,24 @@ import { Spin, Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
+import { useAppContext } from '../state';
 
 const Chat = (props) => {
+
+    const { igroups } = useAppContext()
+
+    const [ingroups, setIngroups] = igroups
+
+    const [current, setCurrent] = useState(null)
+
+    useEffect(() => {
+        setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
+    }, [ingroups, props.match.params.groupid])
 
     return (
         <React.Fragment>
@@ -18,29 +29,26 @@ const Chat = (props) => {
                     :
                     props.isAuthenticated ?
                         <React.Fragment>
-                            <PageHeader page="Nhóm học" subtitle="Cùng nhau học tập ..." />
+                            <PageHeader page="Nhóm học" subtitle={current?.name} />
                             <div className="contentpanel panel-email">
 
                                 <div className="row">
                                     <div className="col-sm-3 col-lg-2">
-                                        <h5 className="subtitle">Nhóm đã tham gia</h5>
+                                        <h5 className="subtitle">Các bài test</h5>
                                         <ul className="nav nav-pills nav-stacked nav-email mb20">
-                                            <li className="active">
+                                            <li>
                                                 <a>
-                                                    <span className="badge pull-right">2</span>
-                                                    <i className="glyphicon glyphicon-folder-open"></i> Ôn thi đại học - Tiếng Anh
+                                                    <i className="glyphicon glyphicon-folder-open"></i> Test 1
                                                 </a>
                                             </li>
                                             <li>
                                                 <a>
-                                                    <i className="glyphicon glyphicon-folder-open"></i> Vượt qua nỗi sợ - Vật lý
+                                                    <i className="glyphicon glyphicon-folder-open"></i> Test 2
                                                 </a>
                                             </li>
                                         </ul>
 
                                         <div className="mb30"></div>
-
-                                        
 
                                     </div>
 
@@ -102,56 +110,116 @@ const Chat = (props) => {
                                                     <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Previous Email"><i className="glyphicon glyphicon-chevron-left"></i></button>
                                                     <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Next Email"><i className="glyphicon glyphicon-chevron-right"></i></button>
                                                 </div>
+                                                
+                                                {/* messages */}
+                                                <div style={{ height: "60vh", overflowY: "auto" }}>
+                                                    <div className="read-panel">
 
-                                                <div className="read-panel">
-
-                                                    <div className="media">
-                                                        <a className="pull-left">
-                                                            <Avatar size={40} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
-                                                        </a>
-                                                        <div className="media-body">
-                                                            <span className="media-meta pull-right">Yesterday at 1:30pm</span>
-                                                            <h4 className="text-primary">Phong</h4>
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:30pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
                                                         </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
                                                     </div>
 
-                                                    <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
-                                                </div>
+                                                    <div className="read-panel">
 
-                                                <div className="read-panel">
-
-                                                    <div className="media">
-                                                        <a className="pull-left">
-                                                            <Avatar size={40} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
-                                                        </a>
-                                                        <div className="media-body">
-                                                            <span className="media-meta pull-right">Yesterday at 1:31pm</span>
-                                                            <h4 className="text-primary">Lâm Thanh Bá Quý</h4>
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:31pm</span>
+                                                                <h4 className="text-primary">Lâm Thanh Bá Quý</h4>
+                                                            </div>
                                                         </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
                                                     </div>
 
-                                                    <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
-                                                </div>
+                                                    <div className="read-panel">
 
-                                                <div className="read-panel">
-
-                                                    <div className="media">
-                                                        <a className="pull-left">
-                                                            <Avatar size={40} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
-                                                        </a>
-                                                        <div className="media-body">
-                                                            <span className="media-meta pull-right">Yesterday at 1:32pm</span>
-                                                            <h4 className="text-primary">Phong</h4>
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:32pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                    </div>
+                                                    <div className="read-panel">
+
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:32pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
+                                                        </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                    </div>
+                                                    <div className="read-panel">
+
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:32pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
+                                                        </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                    </div>
+                                                    <div className="read-panel">
+
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:32pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
+                                                        </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                    </div>
+                                                    <div className="read-panel">
+
+                                                        <div className="media">
+                                                            <a className="pull-left">
+                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                            </a>
+                                                            <div className="media-body">
+                                                                <span className="media-meta pull-right">Yesterday at 1:32pm</span>
+                                                                <h4 className="text-primary">Phong</h4>
+                                                            </div>
+                                                        </div>
+
+                                                        <h4 className="email-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
+                                                    </div>
                                                 </div>
 
+                                                {/* send message */}
                                                 <div className="read-panel">
                                                     <div className="media">
                                                         <a className="pull-left">
-                                                            <Avatar size={26} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
+                                                            <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
                                                         </a>
                                                         <div className="media-body">
                                                             <textarea className="form-control" placeholder="Reply here..."></textarea>
@@ -182,6 +250,8 @@ const mapStateToProps = state => {
         error: state.error,
         change: state.change,
         username: state.username,
+        info: state.info,
+        userId: state.userId,
     }
 }
 

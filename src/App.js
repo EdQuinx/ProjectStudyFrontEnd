@@ -7,6 +7,7 @@ import 'antd/dist/antd.css';
 import * as actions from './store/actions/auth';
 import BlankLayout from './layout/blanklayout';
 import MainLayout from './layout/mainlayout';
+import { AppWrapper } from './state';
 
 
 class App extends Component {
@@ -17,26 +18,27 @@ class App extends Component {
 
     render() {
         return (
-            <Router>
-                <Switch>
-                    
-                    <Route exact path="/signin" render={() => (
-                        <BlankLayout {...this.props}>
-                            <BaseRouter />
-                        </BlankLayout>
-                    )} />
-                    <Route exact path="/signup" render={() => (
-                        <BlankLayout {...this.props}>
-                            <BaseRouter />
-                        </BlankLayout>
-                    )} />
-                    <Route path="*" render={() => (
-                        <MainLayout {...this.props}>
-                            <BaseRouter />
-                        </MainLayout>
-                    )} />
-                </Switch>
-            </Router>
+            <AppWrapper>
+                <Router>
+                    <Switch>
+                        <Route exact path="/signin" render={() => (
+                            <BlankLayout {...this.props}>
+                                <BaseRouter />
+                            </BlankLayout>
+                        )} />
+                        <Route exact path="/signup" render={() => (
+                            <BlankLayout {...this.props}>
+                                <BaseRouter />
+                            </BlankLayout>
+                        )} />
+                        <Route path="*" render={() => (
+                            <MainLayout {...this.props}>
+                                <BaseRouter />
+                            </MainLayout>
+                        )} />
+                    </Switch>
+                </Router>
+            </AppWrapper>
         );
     }
 }
@@ -57,7 +59,7 @@ const mapDispatchToProps = dispatch => {
         logout: () => dispatch(actions.logout()),
         updateChange: () => dispatch(actions.updateChange()),
         onAuth: (username, password) => dispatch(actions.authLogin(username, password)),
-        authSignup: (fullname, username, email, password, gender, classs, goodAt=[], badAt=[]) => dispatch(actions.authSignup(fullname, username, email, password, gender, classs, goodAt=[], badAt=[])),
+        authSignup: (fullname, username, email, password, gender, classs, goodAt = [], badAt = []) => dispatch(actions.authSignup(fullname, username, email, password, gender, classs, goodAt = [], badAt = [])),
     }
 }
 

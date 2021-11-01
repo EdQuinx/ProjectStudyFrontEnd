@@ -1,15 +1,74 @@
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 
-import { Spin, Button, Row, Col, Descriptions } from 'antd';
+import { Spin, Button, Row, Col, Descriptions, message, Modal, Form, Input } from 'antd';
 import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Bar } from 'react-chartjs-2';
+import { useAppContext } from '../state';
+import { Link } from 'react-router-dom';
 
 const DashBoard = (props) => {
+
+    const { uinfo, igroups, wgroups } = useAppContext()
+
+    const [ingroups, setIngroups] = igroups
+    const [wtgroups, setWtgroups] = wgroups
+
+    const [ocreateGr, setOcreateGr] = useState(false)
+    const [ofindGr, setOfindGr] = useState(false)
+    const [ofindFr, setOfindFr] = useState(false)
+    const [
+        formCGR,
+        formFGR,
+        formFFR
+    ] = Form.useForm();
+
+    useEffect(() => {
+        console.log(ingroups)
+    }, [ingroups])
+
+    const handleCreateGroup = (e) => {
+        axios.post(api.api_group_user,
+            {
+                name: e.name,
+                class: e.class
+            },
+            {
+                params: {
+                    username: props.username,
+                    token: props.token
+                }
+            }
+        ).then(res => res.data)
+            .then(res => {
+                if ("_id" in res) {
+                    message.success("Tạo nhóm thành công")
+                    props.updateInfo(props.token, props.username, props.userId);
+                    setIngroups(oldArray => [...oldArray, res]);
+                } else {
+                    message.error(res.msg)
+                }
+                formCGR.resetFields()
+                setOcreateGr(false)
+            })
+            .catch(() => {
+                message.error("Tạo nhóm thất bại")
+                formCGR.resetFields()
+                setOcreateGr(false)
+            })
+    }
+
+    const handleFindGroup = (e) => {
+
+    }
+
+    const handleFindFriend = (e) => {
+
+    }
 
     return (
         <React.Fragment>
@@ -27,25 +86,31 @@ const DashBoard = (props) => {
                                     <div className="col-sm-3 col-lg-2">
                                         <h5 className="subtitle">Nhóm đã tham gia</h5>
                                         <ul className="nav nav-pills nav-stacked nav-email mb20">
-                                            <li className="">
-                                                <a>
-                                                    <span className="badge pull-right">2</span>
-                                                    <i className="glyphicon glyphicon-folder-open"></i> Ôn thi đại học - Tiếng Anh
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a>
-                                                    <i className="glyphicon glyphicon-folder-open"></i> Vượt qua nỗi sợ - Vật lý
-                                                </a>
-                                            </li>
+                                            {
+                                                ingroups.map((data, index) => (
+                                                    <li className="">
+                                                        <Link to={`/chat/${data._id}`}>
+                                                            <span className="badge pull-right">{data.memberIds.length > 0 ? data.memberIds.length : ""}</span>
+                                                            <i className="glyphicon glyphicon-folder-open"></i> {data.name}
+                                                        </Link>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
 
                                         <div className="mb30"></div>
 
                                         <h5 className="subtitle">Nhóm chờ duyệt</h5>
                                         <ul className="nav nav-pills nav-stacked nav-email mb20">
-                                            <li><a><i className="glyphicon glyphicon-folder-open"></i> Nhóm D - Toán</a></li>
-                                            <li><a><i className="glyphicon glyphicon-folder-open"></i> Nhóm E - Ngữ Văn</a></li>
+                                            {
+                                                wtgroups.map((data, index) => (
+                                                    <li className="">
+                                                        <Link to={`/chat/${data._id}`}>
+                                                            <i className="glyphicon glyphicon-folder-open"></i> {data.name}
+                                                        </Link>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
 
                                     </div>
@@ -54,15 +119,30 @@ const DashBoard = (props) => {
 
                                         <div className="panel panel-default">
                                             <div className="panel-body">
+                                                <Modal visible={ocreateGr} title="Tạo nhóm mới"
+                                                    onCancel={() => setOcreateGr(false)}
+                                                    cancelText="Cancel"
+                                                    okText="Tạo"
+                                                    onOk={formCGR.submit}
+                                                >
+                                                    <Form form={formCGR} onFinish={handleCreateGroup}>
+                                                        <Form.Item name="name" label="Tên nhóm" rules={[{ required: true, message: 'Nhập tên nhóm' }]}>
+                                                            <Input placeholder="Nhập tên nhóm" />
+                                                        </Form.Item>
+                                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Nhập khối, lớp' }]}>
+                                                            <Input placeholder="Nhập khối, lớp" type="number" />
+                                                        </Form.Item>
+                                                    </Form>
+                                                </Modal>
                                                 <Row gutter={16}>
                                                     <Col className="gutter-row" span={8}>
-                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />}>Tạo nhóm mới</Button>
+                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />} onClick={() => setOcreateGr(true)} >Tạo nhóm mới</Button>
                                                     </Col>
                                                     <Col className="gutter-row" span={8}>
-                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<FileSearchOutlined />}>Tìm nhóm</Button>
+                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<FileSearchOutlined />} onClick={() => setOfindGr(true)} >Tìm nhóm</Button>
                                                     </Col>
                                                     <Col className="gutter-row" span={8}>
-                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<UsergroupAddOutlined />}>Tìm bạn bè</Button>
+                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<UsergroupAddOutlined />} onClick={() => setOfindFr(true)} >Tìm bạn bè</Button>
                                                     </Col>
                                                 </Row>
                                                 <div className="mb30"></div>
@@ -184,6 +264,7 @@ const DashBoard = (props) => {
 const mapStateToProps = state => {
     return {
         token: state.token,
+        userId: state.userId,
         isAuthenticated: state.token !== null,
         loading: state.loading,
         error: state.error,
@@ -199,6 +280,7 @@ const mapDispatchToProps = dispatch => {
         updateChange: () => dispatch(actions.updateChange()),
         onAuth: (username, password) => dispatch(actions.authLogin(username, password)),
         authSignup: (fullname, username, email, password, gender, classs, goodAt = [], badAt = []) => dispatch(actions.authSignup(fullname, username, email, password, gender, classs, goodAt = [], badAt = [])),
+        updateInfo: (token, username, userId) => dispatch(actions.getInfostatus(token, username, userId)),
     }
 }
 

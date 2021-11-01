@@ -10,12 +10,15 @@ export const api_signup = `${auth_service}/register`
 
 export const user_service = "https://study-group-user.herokuapp.com"
 export const api_user_info = `${user_service}/users/info`
-export const api_user_status = `${user_service}/users`
+export const api_user_status = `${user_service}/users/status`
 export const api_user_add_gudsub = `${user_service}/add/good/subject`
 export const api_user_add_badsub = `${user_service}/add/bad/subject`
 
 export const mail_service = "https://study-group-mail.herokuapp.com"
 export const group_service = "https://study-group-group.herokuapp.com"
+export const api_group_user = `${group_service}/group`
+export const api_group_server = `${group_service}/group/server`
+
 export const member_service = "https://study-group-member.herokuapp.com"
 export const test_service = "https://study-group-test.herokuapp.com"
 export const question_service = "https://study-group-question.herokuapp.com"

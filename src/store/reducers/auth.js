@@ -5,8 +5,10 @@ const initialState = {
     token: null,
     error: null,
     username: "",
+    userId: "",
     change: 0, 
-    loading: false
+    loading: false,
+    info: null
 }
 
 const authStart = (state, action) => {
@@ -20,6 +22,7 @@ const authSuccess = (state, action) => {
     return updateObject(state, {
         token: action.token,
         username: action.username,
+        userId: action.userId,
         error: null,
         loading: false
     });
@@ -34,7 +37,8 @@ const authFail = (state, action) => {
 
 const authLogout = (state, action) => {
     return updateObject(state, {
-        token: null
+        token: null,
+        info: null
     });
 }
 
@@ -44,6 +48,18 @@ const updateChange = (state, action) => {
     });
 }
 
+const resetError = (state, action) => {
+    return updateObject(state, {
+        error: null,
+    });
+}
+
+const updateInfo = (state, action) => {
+    return updateObject(state, {
+        info: action.info
+    });
+} 
+
 const reducer = (state=initialState, action) => {
     switch (action.type) {
         case actionTypes.AUTH_START: return authStart(state, action);
@@ -51,6 +67,8 @@ const reducer = (state=initialState, action) => {
         case actionTypes.AUTH_FAIL: return authFail(state, action);
         case actionTypes.AUTH_LOGOUT: return authLogout(state, action);
         case actionTypes.UPDATE_CHANGE: return updateChange(state, action);
+        case actionTypes.ERROR_CHANGE: return resetError(state, action);
+        case actionTypes.INFO_CHANGE: return updateInfo(state, action);
         default:
             return state;
     }

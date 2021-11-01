@@ -1,12 +1,14 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
-import * as api from '../api'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as actions from '../store/actions/auth';
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+
+import { useAppContext } from '../state'
+import * as api from '../api';
+import axios from 'axios'
 
 const HeaderBar = (props) => {
     const [usermenu, setUsermenu] = useState(false)
@@ -14,6 +16,65 @@ const HeaderBar = (props) => {
     const handleLogout = () => {
         props.logout()
     }
+
+    const { uinfo, igroups, wgroups } = useAppContext()
+
+    const [userinfo, setUserinfo] = uinfo
+    const [ingroups, setIngroups] = igroups
+    const [wtgroups, setWtgroups] = wgroups
+    
+    const handleGetUserInfo = () => {
+        axios.get(api.api_user_info, {
+            params: {
+                username: props.username,
+                token: props.token
+            }
+        }).then(res => res.data)
+            .then(res => {
+                setUserinfo(res)
+            })
+    }
+
+    useEffect(() => {
+        if (props.info !== null && ingroups.length === 0) {
+            const info1 = props.info
+            info1.inGroups.map((idg) => {
+                axios.get(api.api_group_user, {
+                    params: {
+                        username: props.username,
+                        token: props.token,
+                        groupId: idg
+                    }
+                })
+                .then(res => res.data)
+                .then(res => {
+                    setIngroups(oldArray => [...oldArray, res]);
+                })
+                .catch(console.log)
+            })
+        } 
+        if (props.info !== null && wtgroups.length === 0) {
+            const info2 = props.info
+            info2.waitGroups.map((idg) => {
+                axios.get(api.api_group_user, {
+                    params: {
+                        username: props.username,
+                        token: props.token,
+                        groupId: idg
+                    }
+                })
+                .then(res => res.data)
+                .then(res => {
+                    setWtgroups(oldArray => [...oldArray, res]);
+                })
+                .catch(console.log)
+            })
+        }
+    }, [props.info])
+
+    useEffect(() => {
+        handleGetUserInfo()
+    }, []);
 
     return (
         <div className="headerbar">
@@ -225,7 +286,9 @@ const mapStateToProps = state => {
         loading: state.loading,
         error: state.error,
         change: state.change,
-        username: state.username
+        username: state.username,
+        info: state.info,
+        userId: state.userId,
     }
 }
 
@@ -233,6 +296,7 @@ const mapDispatchToProps = dispatch => {
     return {
         logout: () => dispatch(actions.logout()),
         updateChange: () => dispatch(actions.updateChange()),
+        updateInfo: (token, username, userId) => dispatch(actions.getInfostatus(token, username, userId)),
     }
 }
 

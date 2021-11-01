@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
+import { useAppContext } from '../state';
 
 const Profile = (props) => {
     const sampledata = {
@@ -15,15 +16,12 @@ const Profile = (props) => {
         class: 12,
         email: "edquinx2@gmail.com"
     }
-    const [userinfo, setUserinfo] = useState({})
+    const {uinfo} = useAppContext()
+    const [userinfo, setUserinfo] = uinfo
 
     const [gudbad, setGudbad] = useState(true)
     const [showaddSub, setShowaddSub] = useState(false)
     const [addsubForm] = Form.useForm()
-
-    useEffect(() => {
-        handleGetUserInfo()
-    }, [])
 
     const handleGetUserInfo = () => {
         axios.get(api.api_user_info, {
@@ -34,7 +32,6 @@ const Profile = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setUserinfo(res)
-                // console.log(res)
             })
     }
 

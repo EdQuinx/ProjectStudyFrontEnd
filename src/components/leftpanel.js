@@ -4,6 +4,7 @@ import { site_name } from '../api'
 
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
+import { useAppContext } from '../state';
 
 const LeftPanel = (props) => {
     const [navcurrent, setNavcurrent] = useState("")
@@ -13,9 +14,13 @@ const LeftPanel = (props) => {
         props.logout()
     }
 
-    useEffect(() => {
-        console.log(location)
-    },[])
+    const { igroups, wgroups } = useAppContext()
+
+    const [ingroups, setIngroups] = igroups
+    
+    // useEffect(() => {
+    //     console.log(location)
+    // },[])
 
     return (
         <div className="leftpanel">
@@ -62,8 +67,11 @@ const LeftPanel = (props) => {
                             <i className="fa fa-laptop"></i> <span>Danh sách nhóm</span>
                         </a>
                         <ul className="children" style={{ display: navcurrent === "sample" ? "block" : "none"}}>
-                            <li><Link to="/chat"><i className="fa fa-caret-right"></i> Vượt qua nỗi sợ - Vật lý</Link></li>
-                            <li><a><i className="fa fa-caret-right"></i> Ôn thi đại học - Tiếng Anh</a></li>
+                            {
+                                ingroups.map((data,index) => (
+                                    <li className={ location.pathname === `/chat/${data._id}` ? "active" : ""}><Link to={`/chat/${data._id}`}><i className="fa fa-caret-right"></i> {data.name}</Link></li>
+                                ))
+                            }
                         </ul>
                     </li>
                 </ul>

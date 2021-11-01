@@ -8,11 +8,12 @@ export const authStart = () => {
     }
 }
 
-export const authSuccess = (token, username) => {
+export const authSuccess = (token, username, userId) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
-        username: username
+        username: username,
+        userId: userId
     }
 }
 
@@ -51,11 +52,14 @@ export const authLogin = (username, password) => {
             if ("token" in res.data)
             {
                 const token = res.data.token;
+                const userId = res.data.userId;
                 const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
                 localStorage.setItem('token', token);
                 localStorage.setItem('username', username);
+                localStorage.setItem('userId', userId);
                 localStorage.setItem('expirationDate', expirationDate);
-                dispatch(authSuccess(token, username));
+                dispatch(authSuccess(token, username, userId));
+                dispatch(getInfostatus(token, username, userId));
                 dispatch(checkAuthTimeout(3600 * 24 * 7));
             }
             else {
@@ -98,11 +102,14 @@ export const authSignup = (fullname, username, email, password, confirmPassword,
             if ("token" in res.data)
             {
                 const token = res.data.token;
+                const userId = res.data.userId;
                 const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 24 * 7);
                 localStorage.setItem('token', token);
                 localStorage.setItem('username', username);
+                localStorage.setItem('userId', userId);
                 localStorage.setItem('expirationDate', expirationDate);
-                dispatch(authSuccess(token, username));
+                dispatch(authSuccess(token, username, userId));
+                dispatch(getInfostatus(token, username, userId));
                 dispatch(checkAuthTimeout(3600 * 24 * 7));
             }
             else {
@@ -132,7 +139,9 @@ export const authCheckState = () => {
                 dispatch(logout());
             } else {
                 const username = localStorage.getItem('username');
-                dispatch(authSuccess(token, username));
+                const userId = localStorage.getItem('userId');
+                dispatch(authSuccess(token, username, userId));
+                dispatch(getInfostatus(token, username, userId));
                 dispatch(checkAuthTimeout( (expirationDate.getTime() - new Date().getTime()) / 1000) );
             }
         }
@@ -143,5 +152,42 @@ export const authCheckState = () => {
 export const updateChange = () => {
     return {
         type: actionTypes.UPDATE_CHANGE,
+    }
+}
+
+export const errReset = () => {
+    return {
+        type: actionTypes.ERROR_CHANGE,
+    }
+}
+
+export const updateInfo = info => {
+    return {
+        type: actionTypes.INFO_CHANGE,
+        info: info
+    }
+}
+
+export const getInfostatus = (token, username, userId) => {
+    return dispatch => {
+        axios.get(api.api_user_status, {
+            params: {
+                username: username,
+                token: token,
+                userId: userId
+            }
+        })
+        .then(res => res.data)
+        .then(res => {
+            if ("inGroups" in res)
+            {
+                dispatch(updateInfo(res))
+            } else {
+                dispatch(logout())
+            }
+        })
+        .catch(function (error) {
+            dispatch(logout())
+        })
     }
 }
