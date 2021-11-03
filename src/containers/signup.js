@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { site_name } from '../api'
+import * as api from '../api';
 import Footer from '../components/footer'
 
 import { connect } from 'react-redux';
@@ -13,8 +14,7 @@ const SignUp = (props) => {
     const [regForm] = Form.useForm()
 
     useEffect(() => {
-        if (props.error)
-        {
+        if (props.error) {
             message.error(props.error?.msg)
             props.resetError()
         }
@@ -100,7 +100,13 @@ const SignUp = (props) => {
                                         </Form.Item>
 
                                         <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Missing Grade' }]}>
-                                            <Input type="number" />
+                                            <Select>
+                                            {
+                                                api.classes.map((val) => (
+                                                    <Select.Option value={val}>Lớp {val}</Select.Option>
+                                                ))
+                                            }
+                                            </Select>
                                         </Form.Item>
 
                                         <Form.Item >

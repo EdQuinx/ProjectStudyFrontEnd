@@ -27,7 +27,10 @@ export const upload_service = "https://study-group-upload.herokuapp.com"
 export const socket_cluster = "https://study-group-socket-cluster.herokuapp.com"
 export const chat_service = "https://study-group-chat.herokuapp.com"
 export const notify_service = "https://study-group-notify.herokuapp.com"
+
 export const search_service = "https://study-group-search.herokuapp.com"
+export const api_search_group = `${search_service}/search/group`
+export const api_search_users = `${search_service}/search/users`
 
 export const list_sub = [
     "Toán",
@@ -42,4 +45,8 @@ export const list_sub = [
     "Tin học",
     "Âm nhạc",
     "Mĩ thuật"
+]
+
+export const classes = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 ]

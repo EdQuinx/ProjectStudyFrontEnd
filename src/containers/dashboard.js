@@ -5,8 +5,9 @@ import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 
-import { Spin, Button, Row, Col, Descriptions, message, Modal, Form, Input } from 'antd';
-import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Spin, Button, Row, Col, Descriptions, message, Modal, Form, Input, Select, List, Skeleton, Avatar } from 'antd';
+
+import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined, CommentOutlined } from '@ant-design/icons';
 import { Bar } from 'react-chartjs-2';
 import { useAppContext } from '../state';
 import { Link } from 'react-router-dom';
@@ -21,17 +22,21 @@ const DashBoard = (props) => {
     const [ocreateGr, setOcreateGr] = useState(false)
     const [ofindGr, setOfindGr] = useState(false)
     const [ofindFr, setOfindFr] = useState(false)
-    const [
-        formCGR,
-        formFGR,
-        formFFR
-    ] = Form.useForm();
+    const [formCGR] = Form.useForm();
+    const [formFGR] = Form.useForm();
+    const [formFFR] = Form.useForm();
+
+    const [groupsRes, setGroupsres] = useState([])
+    const [friendRes, setFriendres] = useState([])
+
+    const [finding, setFinding] = useState(false)
 
     useEffect(() => {
-        console.log(ingroups)
+        // console.log(ingroups)
     }, [ingroups])
 
     const handleCreateGroup = (e) => {
+        setFinding(true)
         axios.post(api.api_group_user,
             {
                 name: e.name,
@@ -54,20 +59,79 @@ const DashBoard = (props) => {
                 }
                 formCGR.resetFields()
                 setOcreateGr(false)
+                setFinding(false)
             })
             .catch(() => {
                 message.error("Tạo nhóm thất bại")
                 formCGR.resetFields()
                 setOcreateGr(false)
+                setFinding(false)
             })
     }
 
     const handleFindGroup = (e) => {
-
+        setFinding(true)
+        axios.get(api.api_search_group, {
+            params: {
+                username: props.username,
+                token: props.token,
+                ...e
+            }
+        }).then(res => res.data)
+            .then(res => {
+                setFriendres([])
+                if (typeof(res) === "object")
+                {
+                    setGroupsres(res)
+                } else {
+                    message.error("Không tồn tại nhóm này.")
+                    setGroupsres([])
+                }
+                setOfindGr(false)
+                setFinding(false)
+                formFGR.resetFields()
+            })
+            .catch(() => {
+                setGroupsres([])
+                setFriendres([])
+                setOfindGr(false)
+                setFinding(false)
+                formFGR.resetFields()
+                message.error("Tìm nhóm thất bại")
+            })
     }
 
     const handleFindFriend = (e) => {
-
+        setFinding(true)
+        axios.get(api.api_search_users, {
+            params: {
+                username: props.username,
+                token: props.token,
+                ...e
+            }
+        }).then(res => res.data)
+            .then(res => {
+                setGroupsres([])
+                console.log(res)
+                if (typeof(res) === "object")
+                {
+                    setFriendres(res)
+                } else {
+                    setFriendres([])
+                    message.error("Không tồn tại người dùng này.")
+                }
+                formFFR.resetFields()
+                setOfindFr(false)
+                setFinding(false)
+            })
+            .catch(() => {
+                setGroupsres([])
+                setFriendres([])
+                setOfindFr(false)
+                setFinding(false)
+                formFFR.resetFields()
+                message.error("Tìm bạn thất bại")
+            })
     }
 
     return (
@@ -124,16 +188,75 @@ const DashBoard = (props) => {
                                                     cancelText="Cancel"
                                                     okText="Tạo"
                                                     onOk={formCGR.submit}
+                                                    okButtonProps={{ disabled: finding }}
+                                                    cancelButtonProps={{ disabled: finding }}
                                                 >
                                                     <Form form={formCGR} onFinish={handleCreateGroup}>
                                                         <Form.Item name="name" label="Tên nhóm" rules={[{ required: true, message: 'Nhập tên nhóm' }]}>
                                                             <Input placeholder="Nhập tên nhóm" />
                                                         </Form.Item>
                                                         <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Nhập khối, lớp' }]}>
-                                                            <Input placeholder="Nhập khối, lớp" type="number" />
+                                                            <Select>
+                                                                {
+                                                                    api.classes.map((val) => (
+                                                                        <Select.Option value={val}>Lớp {val}</Select.Option>
+                                                                    ))
+                                                                }
+                                                                <Select.Option value="all">All</Select.Option>
+                                                            </Select>
                                                         </Form.Item>
                                                     </Form>
                                                 </Modal>
+
+                                                <Modal visible={ofindGr} title="Tìm nhóm"
+                                                    onCancel={() => setOfindGr(false)}
+                                                    cancelText="Cancel"
+                                                    okText="Tìm"
+                                                    onOk={formFGR.submit}
+                                                    okButtonProps={{ disabled: finding }}
+                                                    cancelButtonProps={{ disabled: finding }}
+                                                >
+                                                    <Form form={formFGR} onFinish={handleFindGroup}>
+                                                        <Form.Item name="search" label="Tên nhóm" rules={[{ required: true, message: 'Nhập tên nhóm' }]}>
+                                                            <Input placeholder="Nhập tên nhóm" />
+                                                        </Form.Item>
+                                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]} initialValue="all">
+                                                            <Select>
+                                                                {
+                                                                    api.classes.map((val) => (
+                                                                        <Select.Option value={val}>Lớp {val}</Select.Option>
+                                                                    ))
+                                                                }
+                                                                <Select.Option value="all">All</Select.Option>
+                                                            </Select>
+                                                        </Form.Item>
+                                                        <Form.Item name="hasSubject" label="Môn học">
+                                                            <Select>
+                                                                {
+                                                                    api.list_sub.map((val) => (
+                                                                        <Select.Option value={val}>{val}</Select.Option>
+                                                                    ))
+                                                                }
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </Form>
+                                                </Modal>
+
+                                                <Modal visible={ofindFr} title="Tìm bạn bè"
+                                                    onCancel={() => setOfindFr(false)}
+                                                    cancelText="Cancel"
+                                                    okText="Tìm"
+                                                    onOk={formFFR.submit}
+                                                    okButtonProps={{ disabled: finding }}
+                                                    cancelButtonProps={{ disabled: finding }}
+                                                >
+                                                    <Form form={formFFR} onFinish={handleFindFriend}>
+                                                        <Form.Item name="search" label="Tìm người dùng" rules={[{ required: true, message: 'Nhập tên người dùng' }]}>
+                                                            <Input placeholder="Nhập tên người dùng hoặc username" />
+                                                        </Form.Item>
+                                                    </Form>
+                                                </Modal>
+
                                                 <Row gutter={16}>
                                                     <Col className="gutter-row" span={8}>
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />} onClick={() => setOcreateGr(true)} >Tạo nhóm mới</Button>
@@ -146,105 +269,64 @@ const DashBoard = (props) => {
                                                     </Col>
                                                 </Row>
                                                 <div className="mb30"></div>
-                                                <Row gutter={[16, 16]}>
-                                                    <Col className="gutter-row" span={24}>
-                                                        <Descriptions title="Toán" bordered>
-                                                            <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                            <Descriptions.Item label="Thời gian làm bài" span={2}>20 phút</Descriptions.Item>
-                                                            <Descriptions.Item label="Biểu đồ kết quả" span={3}>
-                                                                <Bar
-                                                                    data={{
-                                                                        labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
-                                                                        datasets: [
-                                                                            {
-                                                                                label: 'Điểm',
-                                                                                backgroundColor: 'rgba(75,192,192,1)',
-                                                                                borderColor: 'rgba(0,0,0,1)',
-                                                                                borderWidth: 1,
-                                                                                data: [9, 8, 10, 8, 9]
-                                                                            }
-                                                                        ]
-                                                                    }}
-                                                                    height={150}
-                                                                    options={{ maintainAspectRatio: false }}
-                                                                />
-                                                            </Descriptions.Item>
-                                                        </Descriptions>
-                                                    </Col>
-                                                    <Col className="gutter-row" span={24}>
-                                                        <Descriptions title="Vật Lý" bordered>
-                                                            <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                            <Descriptions.Item label="Thời gian làm bài" span={2}>25 phút</Descriptions.Item>
-                                                            <Descriptions.Item label="Biểu đồ kết quả" span={3}>
-                                                                <Bar
-                                                                    data={{
-                                                                        labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
-                                                                        datasets: [
-                                                                            {
-                                                                                label: 'Điểm',
-                                                                                backgroundColor: 'rgba(75,192,192,1)',
-                                                                                borderColor: 'rgba(0,0,0,1)',
-                                                                                borderWidth: 1,
-                                                                                data: [9, 8, 10, 8, 9]
-                                                                            }
-                                                                        ]
-                                                                    }}
-                                                                    height={150}
-                                                                    options={{ maintainAspectRatio: false }}
-                                                                />
-                                                            </Descriptions.Item>
-                                                        </Descriptions>
-                                                    </Col>
-                                                    <Col className="gutter-row" span={24}>
-                                                        <Descriptions title="Hoá Học" bordered>
-                                                            <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                            <Descriptions.Item label="Thời gian làm bài" span={2}>16 phút</Descriptions.Item>
-                                                            <Descriptions.Item label="Biểu đồ kết quả" span={3}>
-                                                                <Bar
-                                                                    data={{
-                                                                        labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
-                                                                        datasets: [
-                                                                            {
-                                                                                label: 'Điểm',
-                                                                                backgroundColor: 'rgba(75,192,192,1)',
-                                                                                borderColor: 'rgba(0,0,0,1)',
-                                                                                borderWidth: 1,
-                                                                                data: [9, 8, 10, 8, 9]
-                                                                            }
-                                                                        ]
-                                                                    }}
-                                                                    height={150}
-                                                                    options={{ maintainAspectRatio: false }}
-                                                                />
-                                                            </Descriptions.Item>
-                                                        </Descriptions>
-                                                    </Col>
-                                                    <Col className="gutter-row" span={24}>
-                                                        <Descriptions title="Tiếng Anh" bordered>
-                                                            <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                            <Descriptions.Item label="Thời gian làm bài" span={2}>30 phút</Descriptions.Item>
-                                                            <Descriptions.Item label="Biểu đồ kết quả" span={3}>
-                                                                <Bar
-                                                                    data={{
-                                                                        labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
-                                                                        datasets: [
-                                                                            {
-                                                                                label: 'Điểm',
-                                                                                backgroundColor: 'rgba(75,192,192,1)',
-                                                                                borderColor: 'rgba(0,0,0,1)',
-                                                                                borderWidth: 1,
-                                                                                data: [9, 8, 10, 8, 9]
-                                                                            }
-                                                                        ]
-                                                                    }}
-                                                                    height={150}
-                                                                    options={{ maintainAspectRatio: false }}
-                                                                />
-                                                            </Descriptions.Item>
-                                                        </Descriptions>
-                                                    </Col>
-                                                </Row>
-
+                                                {
+                                                    groupsRes.length > 0 ?
+                                                        <List
+                                                            itemLayout="horizontal"
+                                                            dataSource={groupsRes}
+                                                            renderItem={item => (
+                                                                <List.Item>
+                                                                    <List.Item.Meta
+                                                                        avatar={<Avatar icon={<CommentOutlined />} />}
+                                                                        title={<b>{item.groupName}</b>}
+                                                                    />
+                                                                   <Button type="primary">Xin vào</Button>
+                                                                </List.Item>
+                                                            )}
+                                                        />
+                                                        :
+                                                        friendRes.length > 0 ?
+                                                        <List
+                                                            itemLayout="horizontal"
+                                                            dataSource={friendRes}
+                                                            renderItem={item => (
+                                                                <List.Item>
+                                                                    <List.Item.Meta
+                                                                        avatar={<Avatar icon={<UsergroupAddOutlined />} />}
+                                                                        title={<b>{item.fullname}</b>} description={item.username}
+                                                                    />
+                                                                   <Button type="primary">Xem thêm</Button>
+                                                                </List.Item>
+                                                            )}
+                                                        />
+                                                            :
+                                                            <Row gutter={[16, 16]}>
+                                                                <Col className="gutter-row" span={24}>
+                                                                    <Descriptions title="Toán" bordered>
+                                                                        <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
+                                                                        <Descriptions.Item label="Thời gian làm bài" span={2}>20 phút</Descriptions.Item>
+                                                                        <Descriptions.Item label="Biểu đồ kết quả" span={3}>
+                                                                            <Bar
+                                                                                data={{
+                                                                                    labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
+                                                                                    datasets: [
+                                                                                        {
+                                                                                            label: 'Điểm',
+                                                                                            backgroundColor: 'rgba(75,192,192,1)',
+                                                                                            borderColor: 'rgba(0,0,0,1)',
+                                                                                            borderWidth: 1,
+                                                                                            data: [9, 8, 10, 8, 9]
+                                                                                        }
+                                                                                    ]
+                                                                                }}
+                                                                                height={150}
+                                                                                options={{ maintainAspectRatio: false }}
+                                                                            />
+                                                                        </Descriptions.Item>
+                                                                    </Descriptions>
+                                                                </Col>
+                                                            </Row>
+                                                }
 
                                             </div>
                                         </div>
