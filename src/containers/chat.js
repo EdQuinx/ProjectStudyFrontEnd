@@ -1,5 +1,5 @@
-import { Spin, Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Spin, Avatar, Button, Tooltip, Popconfirm, message } from 'antd';
+import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -8,6 +8,7 @@ import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 import { useAppContext } from '../state';
+import { useLocation } from 'react-router-dom'
 
 const Chat = (props) => {
 
@@ -17,9 +18,36 @@ const Chat = (props) => {
 
     const [current, setCurrent] = useState(null)
 
+    const location = useLocation()
+
     useEffect(() => {
         setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
     }, [ingroups, props.match.params.groupid])
+
+    const handlDeleteGroup = () => {
+        axios.delete(api.api_group_user, {
+            params: {
+                username: props.username,
+                token: props.token,
+                groupId: props.match.params.groupid
+            }
+        }).then(res => res.data)
+        .then(res => {
+            if (typeof(res) === "object") {
+                if (res.success)
+                {
+                    props.history.push("/")
+                    message.success("Xoá nhóm thành công.")
+                } else {
+                    message.error("Xoá nhóm thất bại.")
+                }
+            } else {
+                message.error(res)
+            }
+        }).catch(() => {
+            message.error("Có lỗi xảy ra trong quá trình xoá group.")
+        })
+    }
 
     return (
         <React.Fragment>
@@ -59,9 +87,11 @@ const Chat = (props) => {
 
                                                 <div className="pull-right">
                                                     <div className="btn-group mr10">
-                                                        <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Archive"><i className="glyphicon glyphicon-hdd"></i></button>
-                                                        <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Report Spam"><i className="glyphicon glyphicon-exclamation-sign"></i></button>
-                                                        <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Delete"><i className="glyphicon glyphicon-trash"></i></button>
+                                                        <Tooltip title="Xoá group">
+                                                            <Popconfirm placement="bottom" title={"Bạn có chắc chắn xoá group ?"} onConfirm={handlDeleteGroup} okText="Yes" cancelText="No">
+                                                                <Button size="small" icon={<DeleteOutlined />} />
+                                                            </Popconfirm>
+                                                        </Tooltip>
                                                     </div>
 
                                                     <div className="btn-group mr10">
@@ -90,7 +120,7 @@ const Chat = (props) => {
                                                         </div>
                                                     </div>
 
-                                                    <div className="btn-group mr5">
+                                                    {/* <div className="btn-group mr5">
                                                         <button className="btn btn-sm btn-white" type="button"><i className="fa fa-reply"></i></button>
                                                         <button data-toggle="dropdown" className="btn btn-sm btn-white dropdown-toggle" type="button">
                                                             <span className="caret"></span>
@@ -102,7 +132,7 @@ const Chat = (props) => {
                                                             <li><a href="#">Delete Message</a></li>
                                                             <li><a href="#">Report Spam</a></li>
                                                         </ul>
-                                                    </div>
+                                                    </div> */}
 
                                                 </div>
 
@@ -110,7 +140,7 @@ const Chat = (props) => {
                                                     <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Previous Email"><i className="glyphicon glyphicon-chevron-left"></i></button>
                                                     <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Next Email"><i className="glyphicon glyphicon-chevron-right"></i></button>
                                                 </div>
-                                                
+
                                                 {/* messages */}
                                                 <div style={{ height: "60vh", overflowY: "auto" }}>
                                                     <div className="read-panel">

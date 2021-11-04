@@ -37,6 +37,7 @@ const HeaderBar = (props) => {
 
     useEffect(() => {
         if (props.info !== null && ingroups.length === 0) {
+            setIngroups([])
             const info1 = props.info
             info1.inGroups.map((idg) => {
                 axios.get(api.api_group_user, {
@@ -48,26 +49,22 @@ const HeaderBar = (props) => {
                 })
                 .then(res => res.data)
                 .then(res => {
-                    setIngroups(oldArray => [...oldArray, res]);
+                    if(res)
+                    {
+                        setIngroups(oldArray => [...oldArray, res])
+                    }
                 })
                 .catch(console.log)
             })
         } 
         if (props.info !== null && wtgroups.length === 0) {
             const info2 = props.info
+            setWtgroups([])
             info2.waitGroups.map((idg) => {
-                axios.get(api.api_group_user, {
-                    params: {
-                        username: props.username,
-                        token: props.token,
-                        groupId: idg
-                    }
-                })
-                .then(res => res.data)
-                .then(res => {
-                    setWtgroups(oldArray => [...oldArray, res]);
-                })
-                .catch(console.log)
+                setWtgroups(oldArray => [...oldArray, {
+                    _id: idg.groupId,
+                    name: idg.groupName
+                }]);
             })
         }
     }, [props.info])

@@ -18,13 +18,20 @@ export const mail_service = "https://study-group-mail.herokuapp.com"
 export const group_service = "https://study-group-group.herokuapp.com"
 export const api_group_user = `${group_service}/group`
 export const api_group_server = `${group_service}/group/server`
+export const api_group_join = `${group_service}/group/join`
 
 export const member_service = "https://study-group-member.herokuapp.com"
 export const test_service = "https://study-group-test.herokuapp.com"
 export const question_service = "https://study-group-question.herokuapp.com"
 export const history_service = "https://study-group-history.herokuapp.com"
 export const upload_service = "https://study-group-upload.herokuapp.com"
+
 export const socket_cluster = "https://study-group-socket-cluster.herokuapp.com"
+export const socket_chat = `${socket_cluster}/chat`
+export const socket_chat_noti = `${socket_cluster}/notifyChat`
+export const socket_noti = `${socket_cluster}/notify`
+
+
 export const chat_service = "https://study-group-chat.herokuapp.com"
 export const notify_service = "https://study-group-notify.herokuapp.com"
 

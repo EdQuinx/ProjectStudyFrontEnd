@@ -1,14 +1,13 @@
 import { Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import HeaderBar from '../components/headerbar'
 import LeftPanel from '../components/leftpanel'
-import PageHeader from '../components/pageheader'
 import RightPanel from '../components/rightpanel'
 import SignIn from '../containers/signin'
 
-import { useAppContext } from '../state'
-import * as api from '../api';
-import axios from 'axios'
+// import { useAppContext } from '../state'
+// import * as api from '../api';
+// import axios from 'axios'
 
 const MainLayout = (props) => {
 

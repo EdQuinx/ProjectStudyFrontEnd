@@ -12,6 +12,9 @@ import { Bar } from 'react-chartjs-2';
 import { useAppContext } from '../state';
 import { Link } from 'react-router-dom';
 
+//socket import
+import io from "socket.io-client";
+
 const DashBoard = (props) => {
 
     const { uinfo, igroups, wgroups } = useAppContext()
@@ -31,9 +34,47 @@ const DashBoard = (props) => {
 
     const [finding, setFinding] = useState(false)
 
-    useEffect(() => {
-        // console.log(ingroups)
-    }, [ingroups])
+    //socket stuffs
+    // const [socket, setSocket] = useState(null);
+    // const [socketConnected, setSocketConnected] = useState(false);
+
+    // useEffect(() => {
+    //     setSocket(io(api.socket_chat))
+    // }, []);
+
+    // useEffect(() => {
+    //     if (!socket) return;
+
+    //     socket.on('connect', () => {
+    //         setSocketConnected(socket.connected);
+    //     });
+    //     socket.on('disconnect', () => {
+    //         setSocketConnected(socket.connected);
+    //     });
+
+    // }, [socket]);
+
+    // const handleSocketConnection = () => {
+    //     if (socketConnected)
+    //         socket.disconnect();
+    //     else {
+    //         socket.connect();
+    //     }
+    // }
+    // <div>
+    //     <div>
+    //         <b>Connection status:</b> {socketConnected ? 'Connected' : 'Disconnected'}
+    //     </div>
+    //     <input
+    //         type="button"
+    //         style={{ marginTop: 10 }}
+    //         value={socketConnected ? 'Disconnect' : 'Connect'}
+    //         onClick={handleSocketConnection} />
+    // </div>
+
+    //end socket stuffs
+
+
 
     const handleCreateGroup = (e) => {
         setFinding(true)
@@ -80,8 +121,7 @@ const DashBoard = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setFriendres([])
-                if (typeof(res) === "object")
-                {
+                if (typeof(res) === "object") {
                     setGroupsres(res)
                 } else {
                     message.error("Không tồn tại nhóm này.")
@@ -113,8 +153,7 @@ const DashBoard = (props) => {
             .then(res => {
                 setGroupsres([])
                 console.log(res)
-                if (typeof(res) === "object")
-                {
+                if (typeof (res) === "object") {
                     setFriendres(res)
                 } else {
                     setFriendres([])
@@ -134,6 +173,40 @@ const DashBoard = (props) => {
             })
     }
 
+    const handleRequestJoinGroup = (groupId, groupName) => {
+        const timenow = new Date().toLocaleString()
+        axios.post(api.api_group_join, {
+            groupId: groupId,
+            username: props.username,
+            createAt: timenow,
+            userId: props.userId,
+        }, {
+            params: {
+                username: props.username,
+                token: props.token
+            }
+        }).then(res => res.data)
+        .then(res => {
+            if (typeof(res) === "object") {
+                if (res.success)
+                {
+                    setWtgroups(oldArray => [...oldArray, {
+                        _id: groupId,
+                        name: groupName
+                    }]);
+                    message.success("Không tồn tại nhóm này.")
+                } else {
+                    message.error("Xin vào nhóm thất bại")
+                }
+            } else {
+                message.error(res)
+            }
+        })
+        .catch(() => {
+            message.error("Xin vào nhóm thất bại")
+        })
+    }
+
     return (
         <React.Fragment>
             {
@@ -143,6 +216,7 @@ const DashBoard = (props) => {
                     props.isAuthenticated ?
                         <React.Fragment>
                             <PageHeader page="Trang chủ" subtitle="Cùng nhau học tập ..." />
+
                             <div className="contentpanel panel-email">
 
                                 <div className="row">
@@ -280,25 +354,25 @@ const DashBoard = (props) => {
                                                                         avatar={<Avatar icon={<CommentOutlined />} />}
                                                                         title={<b>{item.groupName}</b>}
                                                                     />
-                                                                   <Button type="primary">Xin vào</Button>
+                                                                    <Button type="primary" onClick={() => handleRequestJoinGroup(item.groupId, item.groupName)}>Xin vào</Button>
                                                                 </List.Item>
                                                             )}
                                                         />
                                                         :
                                                         friendRes.length > 0 ?
-                                                        <List
-                                                            itemLayout="horizontal"
-                                                            dataSource={friendRes}
-                                                            renderItem={item => (
-                                                                <List.Item>
-                                                                    <List.Item.Meta
-                                                                        avatar={<Avatar icon={<UsergroupAddOutlined />} />}
-                                                                        title={<b>{item.fullname}</b>} description={item.username}
-                                                                    />
-                                                                   <Button type="primary">Xem thêm</Button>
-                                                                </List.Item>
-                                                            )}
-                                                        />
+                                                            <List
+                                                                itemLayout="horizontal"
+                                                                dataSource={friendRes}
+                                                                renderItem={item => (
+                                                                    <List.Item>
+                                                                        <List.Item.Meta
+                                                                            avatar={<Avatar icon={<UsergroupAddOutlined />} />}
+                                                                            title={<b>{item.fullname}</b>} description={item.username}
+                                                                        />
+                                                                        <Button type="primary">Xem thêm</Button>
+                                                                    </List.Item>
+                                                                )}
+                                                            />
                                                             :
                                                             <Row gutter={[16, 16]}>
                                                                 <Col className="gutter-row" span={24}>
