@@ -75,48 +75,6 @@ const LeftPanel = (props) => {
                         </ul>
                     </li>
                 </ul>
-
-                <div className="infosummary" style={{ display: "none" }}>
-                    <h5 className="sidebartitle">Information Summary</h5>
-                    <ul>
-                        <li>
-                            <div className="datainfo">
-                                <span className="text-muted">Daily Traffic</span>
-                                <h4>630, 201</h4>
-                            </div>
-                            <div id="sidebar-chart" className="chart"></div>
-                        </li>
-                        <li>
-                            <div className="datainfo">
-                                <span className="text-muted">Average Users</span>
-                                <h4>1, 332, 801</h4>
-                            </div>
-                            <div id="sidebar-chart2" className="chart"></div>
-                        </li>
-                        <li>
-                            <div className="datainfo">
-                                <span className="text-muted">Disk Usage</span>
-                                <h4>82.2%</h4>
-                            </div>
-                            <div id="sidebar-chart3" className="chart"></div>
-                        </li>
-                        <li>
-                            <div className="datainfo">
-                                <span className="text-muted">CPU Usage</span>
-                                <h4>140.05 - 32</h4>
-                            </div>
-                            <div id="sidebar-chart4" className="chart"></div>
-                        </li>
-                        <li>
-                            <div className="datainfo">
-                                <span className="text-muted">Memory Usage</span>
-                                <h4>32.2%</h4>
-                            </div>
-                            <div id="sidebar-chart5" className="chart"></div>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
         </div>
     )

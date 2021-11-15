@@ -194,7 +194,7 @@ const DashBoard = (props) => {
                         _id: groupId,
                         name: groupName
                     }]);
-                    message.success("Không tồn tại nhóm này.")
+                    message.success("Đã gửi yêu cầu vào nhóm.")
                 } else {
                     message.error("Xin vào nhóm thất bại")
                 }
