@@ -28,7 +28,9 @@ export const api_member = `${member_service}/member`
 export const test_service = "http://103.90.229.216:30004"
 export const question_service = "http://103.90.229.216:30003"
 export const history_service = "http://103.90.229.216:30007"
+
 export const upload_service = "http://103.90.229.216:30010"
+export const api_upload_chat = `${upload_service}/upload/messages`
 
 export const socket_cluster = "http://103.90.229.216:30012"
 export const socket_chat = `${socket_cluster}/chat`
