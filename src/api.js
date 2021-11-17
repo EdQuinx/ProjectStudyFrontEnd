@@ -16,6 +16,7 @@ export const api_user_add_gudsub = `${user_service}/add/good/subject`
 export const api_user_add_badsub = `${user_service}/add/bad/subject`
 
 export const mail_service = "http://103.90.229.216:30008"
+
 export const group_service = "http://103.90.229.216:30002"
 export const api_group_user = `${group_service}/group`
 export const api_group_server = `${group_service}/group/server`
@@ -26,7 +27,15 @@ export const api_member = `${member_service}/member`
 
 
 export const test_service = "http://103.90.229.216:30004"
+export const api_group_test_all = `${test_service}/group/test/all`
+export const api_group_test = `${test_service}/group/test`
+
+
 export const question_service = "http://103.90.229.216:30003"
+export const api_question_group_get = `${question_service}/group/question/test`
+export const api_question_group = `${question_service}/group/question`
+
+
 export const history_service = "http://103.90.229.216:30007"
 
 export const upload_service = "http://103.90.229.216:30010"

@@ -25,6 +25,8 @@ const Chat = (props) => {
 
     const [current, setCurrent] = useState(null)
 
+    const [groupInfo, setGroupInfo] = useState(null)
+
     const location = useLocation()
 
     const handleSetmenu = (menu) => {
@@ -37,6 +39,8 @@ const Chat = (props) => {
     }
 
     useEffect(() => {
+        console.log(location)
+        handlegetGroupInfo()
         const abc = ingroups.find(data => data._id === props.match.params.groupid)
         if (abc === undefined) {
             // alert("Bạn chưa được duyệt vào nhóm")
@@ -47,8 +51,21 @@ const Chat = (props) => {
             setImin(true)
         }
         setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
-        console.log(ingroups)
     }, [ingroups, props.match.params.groupid])
+
+    const handlegetGroupInfo = () => {
+        axios.get(api.api_group_user, {
+            params: {
+                username: props.username,
+                token: props.token,
+                groupId: props.match.params.groupid
+            }
+        }).then(res => res.data)
+        .then(res => {
+            setGroupInfo(res)
+        })
+        .catch(console.log)
+    }
 
     const handlDeleteGroup = () => {
         axios.delete(api.api_group_user, {
@@ -77,7 +94,7 @@ const Chat = (props) => {
     //socket stuffs
     const [socket, setSocket] = useState(null);
     const [socketConnected, setSocketConnected] = useState(0);
-    const [message, setMessage] = useState("")
+    const [messag, setMessag] = useState("")
     const [data, setData] = useState([])
     const [pload, setPload] = useState(1)
     const [users, setUsers] = useState([])
@@ -147,11 +164,11 @@ const Chat = (props) => {
             socket.emit('inputChatMessage', {
                 groupId: props.match.params.groupid,
                 sender: props.username,
-                message: message,
+                message: messag,
                 type: "text",
                 time: new Date().toString()
             })
-            setMessage("")
+            setMessag("")
             console.log(msgfiles)
             msgfiles.map(e => {
                 socket.emit('inputChatMessage', {
@@ -179,7 +196,10 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                console.log(res)
+                if (res?.success)
+                {
+                    message.success("Duyệt vào nhóm thành công")
+                }
             }).catch(console.log)
     }
 
@@ -251,33 +271,45 @@ const Chat = (props) => {
                                             <div className="panel-body">
 
                                                 <div className="pull-right">
-                                                    <div className="btn-group mr10">
-                                                        <Tooltip title="Xoá group">
-                                                            <Popconfirm placement="bottom" title={"Bạn có chắc chắn xoá group ?"} onConfirm={handlDeleteGroup} okText="Yes" cancelText="No">
-                                                                <Button size="small" icon={<DeleteOutlined />} />
-                                                            </Popconfirm>
-                                                        </Tooltip>
-                                                    </div>
-
-                                                    <div className="btn-group mr10">
-                                                        <div className={dropmenu === "userrequest" ? "btn-group nomargin open" : "btn-group nomargin"}>
-                                                            <Badge count={current?.joinRequest.length}>
-                                                                <button onClick={() => handleSetmenu("userrequest")} data-toggle="dropdown" className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
-                                                                    <UsergroupAddOutlined />
-                                                                    <span className="caret"></span>
-                                                                </button>
-                                                            </Badge>
-                                                            <ul className="dropdown-menu" style={{ minWidth: `${200}px`, "left": "-152px" }}>
-                                                                {
-                                                                    current?.joinRequest.map((val) => (
-                                                                        <li style={{ paddingLeft: "10px" }}>
-                                                                            <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} <Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button> <Button>Deny</Button>
-                                                                        </li>
-                                                                    ))
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    </div>
+                                                    
+                                                    {
+                                                        groupInfo?.leaderId === props.userId ?
+                                                        <React.Fragment>
+                                                            <div className="btn-group mr10">
+                                                                <Tooltip title="Xoá group">
+                                                                    <Popconfirm placement="bottom" title={"Bạn có chắc chắn xoá group ?"} onConfirm={handlDeleteGroup} okText="Yes" cancelText="No">
+                                                                        <Button size="small" icon={<DeleteOutlined />} />
+                                                                    </Popconfirm>
+                                                                </Tooltip>
+                                                            </div>
+                                                            <div className="btn-group mr10">
+                                                                <div className={dropmenu === "userrequest" ? "btn-group nomargin open" : "btn-group nomargin"}>
+                                                                    <Badge count={current?.joinRequest.length}>
+                                                                        <button onClick={() => handleSetmenu("userrequest")} data-toggle="dropdown" className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
+                                                                            <UsergroupAddOutlined />
+                                                                            <span className="caret"></span>
+                                                                        </button>
+                                                                    </Badge>
+                                                                    <ul className="dropdown-menu" style={{ minWidth: `${200}px`, "left": "-152px" }}>
+                                                                        {
+                                                                            current?.joinRequest.map((val) => (
+                                                                                <li style={{ paddingLeft: "10px" }}>
+                                                                                    <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} <Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button> <Button>Deny</Button>
+                                                                                </li>
+                                                                            ))
+                                                                        }
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <div className="btn-group mr10">
+                                                                <Link to={location.pathname + "/tests"} className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
+                                                                    QL Test
+                                                                </Link>
+                                                            </div>
+                                                        </React.Fragment>
+                                                        : <></>
+                                                    }
+                                                    
 
                                                     {/* <div className="btn-group mr5">
                                                         <button className="btn btn-sm btn-white" type="button"><i className="fa fa-reply"></i></button>
@@ -323,16 +355,21 @@ const Chat = (props) => {
                                                                     </div>
                                                                 </div>
 
-                                                                <h4 className="email-subject">{
+                                                                <h4 className="email-subject" onLoad={scrollToBottom}>{
                                                                     val.type === "image" ?
                                                                         <Image src={val.message} width="200px" />
-                                                                        :
-                                                                        val.type === "file" ?
-                                                                            <Typography.Link href={val.message} target="_blank">
-                                                                                <LinkOutlined /> {val.message.split("/")[val.message.split("/").length-1].split("-")[val.message.split("/")[val.message.split("/").length-1].split("-").length-1]}
-                                                                            </Typography.Link>
-                                                                            :
-                                                                            val.message
+                                                                    :
+                                                                    val.type === "file" ?
+                                                                        <Typography.Link href={val.message} target="_blank">
+                                                                            <LinkOutlined /> {val.message.split("/")[val.message.split("/").length - 1].split("-")[val.message.split("/")[val.message.split("/").length - 1].split("-").length - 1]}
+                                                                        </Typography.Link>
+                                                                    :
+                                                                    val.type === "video" ?
+                                                                        <video width="400" controls onLoad={scrollToBottom}>
+                                                                            <source src={val.message} />
+                                                                        </video>
+                                                                    :
+                                                                        val.message
                                                                 }</h4>
                                                             </div>
                                                         ))
@@ -347,7 +384,7 @@ const Chat = (props) => {
                                                             <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
                                                         </a>
                                                         <div className="media-body">
-                                                            <Input.TextArea value={message} rows={2} onChange={(e) => setMessage(e.target.value)} onKeyUp={(e) => {
+                                                            <Input.TextArea value={messag} rows={2} onChange={(e) => setMessag(e.target.value)} onKeyUp={(e) => {
                                                                 if (e.key == "Enter") {
                                                                     handleSendMsg()
                                                                 }
