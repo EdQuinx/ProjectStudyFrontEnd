@@ -7,6 +7,7 @@ import 'antd/dist/antd.css';
 import * as actions from './store/actions/auth';
 import BlankLayout from './layout/blanklayout';
 import MainLayout from './layout/mainlayout';
+import TestLayout from './layout/testlayout';
 import { AppWrapper } from './state';
 
 
@@ -21,6 +22,11 @@ class App extends Component {
             <AppWrapper>
                 <Router>
                     <Switch>
+                        <Route exact path="/group-test/:testid" render={() => (
+                            <TestLayout {...this.props}>
+                                <BaseRouter />
+                            </TestLayout>
+                        )} />
                         <Route exact path="/signin" render={() => (
                             <BlankLayout {...this.props}>
                                 <BaseRouter />

@@ -1,4 +1,4 @@
-import { Spin, List, Button, Modal, message, Form, Radio, Select, Input } from 'antd';
+import { Spin, List, Button, Modal, message, Form, Radio, Select, Input, Typography } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ const GroupTest = (props) => {
     const [questNum, setQuestNum] = useState(1)
     const [showModal, setShowModal] = useState(true)
     const [result, setResult] = useState({ userChoice: "", answer: "" })
+
     const handleOk = (e) => {
         console.log(e)
     }
@@ -23,12 +24,14 @@ const GroupTest = (props) => {
         console.log(e)
         setState(false)
     }
+
+
     useEffect(() => {
-        handleDoTest("6194c83fbaa26ae73d1de91b")
+        handleDoTest("6194c83fbaa26ae73d1de91b") // props.match.params.testid
     }, [])
 
 
-    //
+    // get question list
     const handleDoTest = (id) => {
         axios.get(api.api_group_do_test, {
             params: {
@@ -39,10 +42,20 @@ const GroupTest = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setTestlist(res)
-                console.log(testlist)
+                console.log(res)
             }).catch(console.log)
     }
-    //
+
+    // get Test info
+    const handleGetTestInfo = (id) => {
+        axios.get(api.api_group_test, {
+            params: {
+                username: props.username,
+                token: props.token,
+                testId: id
+            }
+        })
+    }
 
     return (
         <React.Fragment>
@@ -56,8 +69,7 @@ const GroupTest = (props) => {
                             <div className="contentpanel">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                                        <Form.Item label={"Test Modal"} className="modal-title" initialValue="h4"></Form.Item>
+                                        <Typography.Title level={2}>t</Typography.Title>
                                     </div>
                                     <div class="modal-body">...</div>
                                 </div>
