@@ -10,19 +10,36 @@ import { useAppContext } from '../state'
 import * as api from '../api';
 import axios from 'axios'
 
+import io from "socket.io-client";
+
+import { Button, notification } from 'antd';
+
 const HeaderBar = (props) => {
     const [usermenu, setUsermenu] = useState(false)
+
+    const [openning, setOpenning] = useState("")
+
+    const handleChangeOpen = (tab) => {
+        if (openning === tab) {
+            setOpenning("")
+        } else {
+            setOpenning(tab)
+        }
+    }
 
     const handleLogout = () => {
         props.logout()
     }
 
-    const { uinfo, igroups, wgroups } = useAppContext()
+    const { uinfo, igroups, wgroups, notisocket } = useAppContext()
 
     const [userinfo, setUserinfo] = uinfo
     const [ingroups, setIngroups] = igroups
     const [wtgroups, setWtgroups] = wgroups
-    
+    const [socketnoti, setSocketnoti] = notisocket
+
+
+
     const handleGetUserInfo = () => {
         axios.get(api.api_user_info, {
             params: {
@@ -47,16 +64,15 @@ const HeaderBar = (props) => {
                         groupId: idg
                     }
                 })
-                .then(res => res.data)
-                .then(res => {
-                    if(res)
-                    {
-                        setIngroups(oldArray => [...oldArray, res])
-                    }
-                })
-                .catch(console.log)
+                    .then(res => res.data)
+                    .then(res => {
+                        if (res) {
+                            setIngroups(oldArray => [...oldArray, res])
+                        }
+                    })
+                    .catch(console.log)
             })
-        } 
+        }
         if (props.info !== null && wtgroups.length === 0) {
             const info2 = props.info
             setWtgroups([])
@@ -71,7 +87,45 @@ const HeaderBar = (props) => {
 
     useEffect(() => {
         handleGetUserInfo()
+        handleGetAllNotifies()
+        return () => {
+            setSocketnoti(io(api.socket_noti))
+        }
     }, []);
+
+    const [notifies, setNotifies] = useState([])
+
+    const handleGetAllNotifies = () => {
+        axios.get(api.api_notify, {
+            params: {
+                username: props.username,
+                token: props.token,
+                userId: props.userId
+            }
+        }).then(res => res.data)
+            .then(res => {
+                setNotifies(res)
+            })
+            .catch(console.log)
+    }
+
+
+
+    useEffect(() => {
+        if (!socketnoti) return;
+        console.log(socketnoti)
+
+        socketnoti.emit('user connect', props.userId)
+
+        socketnoti.on("require do test", ({ groupId, testId }) => {
+            notification.open({
+                message: 'Yêu cầu làm test',
+                description: 'Bạn có một yêu cầu làm test',
+                duration: 0,
+            })
+        })
+
+    }, [socketnoti]);
 
     return (
         <div className="headerbar">
@@ -128,15 +182,15 @@ const HeaderBar = (props) => {
                             </div>
                         </div>
                     </li>
-                    
+
                     <li>
-                        <div className="btn-group">
-                            <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
+                        <div className={openning === "mail" ? "btn-group open" : "btn-group"} >
+                            <button onClick={() => handleChangeOpen("mail")} className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
                                 <i className="glyphicon glyphicon-envelope"></i>
                                 <span className="badge">1</span>
                             </button>
                             <div className="dropdown-menu dropdown-menu-head pull-right">
-                                <h5 className="title">You Have 1 New Message</h5>
+                                <h5 className="title">Test Notify</h5>
                                 <ul className="dropdown-list gen-list">
                                     <li className="new">
                                         <a fake="">
@@ -188,7 +242,7 @@ const HeaderBar = (props) => {
                             </div>
                         </div>
                     </li>
-                    
+
                     <li>
                         <div className="btn-group">
                             <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
@@ -249,11 +303,11 @@ const HeaderBar = (props) => {
                         </div>
                     </li>
                     <li>
-                    
-                    <div className={usermenu ? "btn-group open" : "btn-group"}>
+
+                        <div className={usermenu ? "btn-group open" : "btn-group"}>
                             <button type="button" className="btn btn-default dropdown-toggle" onClick={() => setUsermenu(!usermenu)}>
-                                <Avatar size={26} icon={<UserOutlined />} style={{ marginRight : "5px" }} />
-                                { props.username ? props.username : "Loading ..."}
+                                <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                {props.username ? props.username : "Loading ..."}
                                 <span className="caret"></span>
                             </button>
                             <ul className="dropdown-menu dropdown-menu-usermenu pull-right">

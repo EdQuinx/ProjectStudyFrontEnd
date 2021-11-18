@@ -1,4 +1,4 @@
-import { Spin, Avatar, Button, Tooltip, Popconfirm, message, Badge, Input, Image, Divider, Upload, Typography } from 'antd';
+import { Spin, Avatar, Button, Tooltip, Popconfirm, message, Badge, Input, Image, Divider, Upload, Typography, Modal, Select, Form } from 'antd';
 import { UserOutlined, DeleteOutlined, UsergroupAddOutlined, UploadOutlined, StarOutlined, LinkOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -16,7 +16,8 @@ const { TextArea } = Input;
 const Chat = (props) => {
 
     const [imin, setImin] = useState(false)
-    const { uinfo, igroups, wgroups } = useAppContext()
+    const { uinfo, igroups, wgroups, notisocket } = useAppContext()
+
     const [userinfo, setUserinfo] = uinfo
     const [ingroups, setIngroups] = igroups
     const [wtgroups, setWtgroups] = wgroups
@@ -39,7 +40,7 @@ const Chat = (props) => {
     }
 
     useEffect(() => {
-        console.log(location)
+        // console.log(location)
         handlegetGroupInfo()
         const abc = ingroups.find(data => data._id === props.match.params.groupid)
         if (abc === undefined) {
@@ -51,6 +52,7 @@ const Chat = (props) => {
             setImin(true)
         }
         setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
+        // console.log(ingroups.find(data => data._id === props.match.params.groupid))
     }, [ingroups, props.match.params.groupid])
 
     const handlegetGroupInfo = () => {
@@ -93,6 +95,8 @@ const Chat = (props) => {
 
     //socket stuffs
     const [socket, setSocket] = useState(null);
+    const [socketnoti, setSocketnoti] = useState(null);
+
     const [socketConnected, setSocketConnected] = useState(0);
     const [messag, setMessag] = useState("")
     const [data, setData] = useState([])
@@ -109,6 +113,7 @@ const Chat = (props) => {
         if (imin) {
             setSocket(io(api.socket_chat))
             handleGetAllChat()
+            handlGetTestList()
         }
     }, [imin]);
 
@@ -169,7 +174,7 @@ const Chat = (props) => {
                 time: new Date().toString()
             })
             setMessag("")
-            console.log(msgfiles)
+            // console.log(msgfiles)
             msgfiles.map(e => {
                 socket.emit('inputChatMessage', {
                     groupId: props.match.params.groupid,
@@ -203,6 +208,65 @@ const Chat = (props) => {
             }).catch(console.log)
     }
 
+    const handleDenyToGroup = (uid) => { 
+        axios.patch(api.api_group_deny, {
+            groupId: props.match.params.groupid,
+            username: uid,
+        }, {
+            params: {
+                username: props.username,
+                token: props.token,
+                groupId: props.match.params.groupid,
+            }
+        }).then(res => res.data)
+            .then(res => {
+                if (res?.success)
+                {
+                    message.success("Đã từ chối nhóm")
+                }
+            }).catch(console.log)
+    }
+
+
+    // test request
+
+    const [showChooseTest, setShowChooseTest] = useState("")
+    const [testlist, setTestlist] = useState([])
+    const [picktest] = Form.useForm()
+
+    const handlGetTestList = () => {
+        axios.get(api.api_group_test_all, {
+            params: {
+                username: props.username,
+                token: props.token,
+                groupId: props.match.params.groupid
+            }
+        }).then(res => res.data)
+            .then(res => {
+                console.log(res)
+                setTestlist(res)
+            })
+            .catch(console.log)
+    }
+
+    const handleSetTargetTest = (username) => {
+        if (showChooseTest === username)
+        {
+            setShowChooseTest("")
+        } else {
+            setShowChooseTest(username)
+        }
+    }
+
+    const handleSendTestRequest = (e) => {
+        
+        socketnoti.emit("require do test", {
+            groupId: props.match.params.groupid, 
+            username: showChooseTest, 
+            testId: e.testId,
+        })
+    }
+
     //end socket stuffs
 
     const [fileList, setFileList] = useState([])
@@ -234,6 +298,8 @@ const Chat = (props) => {
             },
         };
         fmData.append("files", file);
+        fmData.append("groupId", props.match.params.groupid);
+        fmData.append("username", props.username);
         try {
             const res = await axios.post(
                 api.api_upload_chat,
@@ -242,7 +308,7 @@ const Chat = (props) => {
             );
             onSuccess("Ok");
             if (res.status === 200 && res.data.length > 0) {
-                console.log(res)
+                // console.log(res)
                 setMsgfiles(old => [...old, res.data[0]])
             }
         } catch (err) {
@@ -290,11 +356,30 @@ const Chat = (props) => {
                                                                             <span className="caret"></span>
                                                                         </button>
                                                                     </Badge>
-                                                                    <ul className="dropdown-menu" style={{ minWidth: `${200}px`, "left": "-152px" }}>
+                                                                    <Modal visible={showChooseTest}
+                                                                        onCancel={() => setShowChooseTest("")}
+                                                                        onOk={() => picktest.submit()}
+                                                                    >
+                                                                        <Form form={picktest} onFinish={handleSendTestRequest} >
+                                                                            <Form.Item label="Chọn bài test" name="testId" initialValue="p">
+                                                                                <Select>
+                                                                                    {
+                                                                                        testlist.map(val => (
+                                                                                            <Select.Option value={val._id}>{val.subject}</Select.Option>
+                                                                                        ))
+                                                                                    }
+                                                                                </Select>
+                                                                            </Form.Item>
+                                                                        </Form>
+                                                                    </Modal>
+
+                                                                    <ul className="dropdown-menu" style={{ minWidth: `${250}px`, "left": "-152px" }}>
                                                                         {
                                                                             current?.joinRequest.map((val) => (
                                                                                 <li style={{ paddingLeft: "10px" }}>
-                                                                                    <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} <Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button> <Button>Deny</Button>
+                                                                                    <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} <Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button> 
+                                                                                    <Button onClick={() => handleDenyToGroup(val.username)}>Deny</Button> 
+                                                                                    <Button onClick={() => handleSetTargetTest(val.username)}>Test</Button>
                                                                                 </li>
                                                                             ))
                                                                         }

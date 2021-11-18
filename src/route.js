@@ -7,6 +7,8 @@ import Profile from "./containers/profile";
 import Chat from "./containers/chat";
 import Tests from "./containers/tests";
 import EditTest from "./containers/edittest";
+import SystemTest from "./containers/systemtest"
+import GroupTest from "./containers/grouptest"
 
 const BaseRouter = () => (
     <Switch>
@@ -16,6 +18,8 @@ const BaseRouter = () => (
         <Route exact path="/chat/:groupid" component={Chat} />
         <Route exact path="/chat/:groupid/tests" component={Tests} />
         <Route exact path="/chat/:groupid/tests/edit/:testid" component={EditTest} />
+        <Route exact path="/system-test" component={SystemTest} />
+        <Route exact path="/group-test" component={GroupTest} />
         <Route exact path="/signin" component={SignIn} />
         <Route exact path="/signup" component={SignUp} />
     </Switch>
