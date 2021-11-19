@@ -13,6 +13,7 @@ import io from "socket.io-client";
 
 
 const { TextArea } = Input;
+
 const Chat = (props) => {
 
     const [imin, setImin] = useState(false)
@@ -95,13 +96,12 @@ const Chat = (props) => {
 
     //socket stuffs
     const [socket, setSocket] = useState(null);
-    const [socketnoti, setSocketnoti] = useState(null);
+    const [socketnoti, setSocketnoti] = notisocket
 
     const [socketConnected, setSocketConnected] = useState(0);
     const [messag, setMessag] = useState("")
     const [data, setData] = useState([])
     const [pload, setPload] = useState(1)
-    const [users, setUsers] = useState([])
 
     const messagesEndRef = useRef(null)
 
@@ -259,12 +259,13 @@ const Chat = (props) => {
     }
 
     const handleSendTestRequest = (e) => {
-        
-        socketnoti.emit("require do test", {
+        console.log(socketnoti)
+        const db = {
             groupId: props.match.params.groupid, 
             username: showChooseTest, 
             testId: e.testId,
-        })
+        }
+        socketnoti.emit("require do test", db)
     }
 
     //end socket stuffs

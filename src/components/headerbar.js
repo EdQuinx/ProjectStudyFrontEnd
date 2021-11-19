@@ -88,9 +88,7 @@ const HeaderBar = (props) => {
     useEffect(() => {
         handleGetUserInfo()
         handleGetAllNotifies()
-        return () => {
-            setSocketnoti(io(api.socket_noti))
-        }
+        setSocketnoti(io(api.socket_noti))
     }, []);
 
     const [notifies, setNotifies] = useState([])
@@ -105,6 +103,7 @@ const HeaderBar = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setNotifies(res)
+                console.log(res)
             })
             .catch(console.log)
     }
@@ -112,16 +111,19 @@ const HeaderBar = (props) => {
 
 
     useEffect(() => {
+        
         if (!socketnoti) return;
+
         console.log(socketnoti)
 
         socketnoti.emit('user connect', props.userId)
 
-        socketnoti.on("require do test", ({ groupId, testId }) => {
+        socketnoti.on('require do test', (data) => {
+            console.log(data)
             notification.open({
                 message: 'Yêu cầu làm test',
                 description: 'Bạn có một yêu cầu làm test',
-                duration: 0,
+                duration: 5,
             })
         })
 
@@ -138,56 +140,12 @@ const HeaderBar = (props) => {
 
             <div className="header-right">
                 <ul className="headermenu">
-                    <li>
-                        <div className="btn-group">
-                            <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
-                                <i className="glyphicon glyphicon-user"></i>
-                                <span className="badge">2</span>
-                            </button>
-                            <div className="dropdown-menu dropdown-menu-head pull-right">
-                                <h5 className="title">2 Newly Registered Users</h5>
-                                <ul className="dropdown-list user-list">
-                                    <li className="new">
-                                        <div className="thumb"><a fake=""><img src="images/photos/user1.png" alt="" /></a></div>
-                                        <div className="desc">
-                                            <h5><a fake="">Draniem Daamul (@draniem)</a> <span className="badge badge-success">new</span></h5>
-                                        </div>
-                                    </li>
-                                    <li className="new">
-                                        <div className="thumb"><a fake=""><img src="images/photos/user2.png" alt="" /></a></div>
-                                        <div className="desc">
-                                            <h5><a fake="">Zaham Sindilmaca (@zaham)</a> <span className="badge badge-success">new</span></h5>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb"><a fake=""><img src="images/photos/user3.png" alt="" /></a></div>
-                                        <div className="desc">
-                                            <h5><a fake="">Weno Carasbong (@wenocar)</a></h5>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb"><a fake=""><img src="images/photos/user4.png" alt="" /></a></div>
-                                        <div className="desc">
-                                            <h5><a fake="">Nusja Nawancali (@nusja)</a></h5>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb"><a fake=""><img src="images/photos/user5.png" alt="" /></a></div>
-                                        <div className="desc">
-                                            <h5><a fake="">Lane Kitmari (@lane_kitmare)</a></h5>
-                                        </div>
-                                    </li>
-                                    <li className="new"><a fake="">See All Users</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
 
                     <li>
                         <div className={openning === "mail" ? "btn-group open" : "btn-group"} >
                             <button onClick={() => handleChangeOpen("mail")} className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
                                 <i className="glyphicon glyphicon-envelope"></i>
-                                <span className="badge">1</span>
+                                {/* <span className="badge">1</span> */}
                             </button>
                             <div className="dropdown-menu dropdown-menu-head pull-right">
                                 <h5 className="title">Test Notify</h5>
@@ -201,51 +159,14 @@ const HeaderBar = (props) => {
                                             </span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a fake="">
-                                            <span className="thumb"><img src="images/photos/user2.png" alt="" /></span>
-                                            <span className="desc">
-                                                <span className="name">Nusja Nawancali</span>
-                                                <span className="msg">Lorem ipsum dolor sit amet...</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a fake="">
-                                            <span className="thumb"><img src="images/photos/user3.png" alt="" /></span>
-                                            <span className="desc">
-                                                <span className="name">Weno Carasbong</span>
-                                                <span className="msg">Lorem ipsum dolor sit amet...</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a fake="">
-                                            <span className="thumb"><img src="images/photos/user4.png" alt="" /></span>
-                                            <span className="desc">
-                                                <span className="name">Zaham Sindilmaca</span>
-                                                <span className="msg">Lorem ipsum dolor sit amet...</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a fake="">
-                                            <span className="thumb"><img src="images/photos/user5.png" alt="" /></span>
-                                            <span className="desc">
-                                                <span className="name">Veno Leongal</span>
-                                                <span className="msg">Lorem ipsum dolor sit amet...</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li className="new"><a fake="">Read All Messages</a></li>
                                 </ul>
                             </div>
                         </div>
                     </li>
 
                     <li>
-                        <div className="btn-group">
-                            <button className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
+                        <div className={openning === "all" ? "btn-group open" : "btn-group"}>
+                            <button  onClick={() => handleChangeOpen("all")} className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
                                 <i className="glyphicon glyphicon-globe"></i>
                                 <span className="badge">5</span>
                             </button>

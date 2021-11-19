@@ -36,6 +36,8 @@ export const api_group_do_test = `${test_service}/group/dotest`
 export const question_service = "http://103.90.229.216:30003"
 export const api_question_group_get = `${question_service}/group/question/test`
 export const api_question_group = `${question_service}/group/question`
+export const api_question_system_gettest = `${question_service}/system/question/test`
+export const api_question_system = `${question_service}/system/question/test`
 
 
 export const history_service = "http://103.90.229.216:30007"
