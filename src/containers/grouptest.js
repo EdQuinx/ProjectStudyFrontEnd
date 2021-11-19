@@ -1,4 +1,4 @@
-import { Spin, List, Button, Modal, message, Form, Radio, Select, Input, Typography } from 'antd';
+import { Spin, List, Button, Modal, message, Form, Radio, Select, Typography, Checkbox } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
@@ -12,18 +12,9 @@ const GroupTest = (props) => {
 
     const location = useLocation()
     const [testlist, setTestlist] = useState([])
-    const [state, setState] = useState(true)
-    const [questNum, setQuestNum] = useState(1)
-    const [showModal, setShowModal] = useState(true)
+    const [answer, setAnswer] = useState([])
+    const [index, setIndex] = useState(0)
     const [result, setResult] = useState({ userChoice: "", answer: "" })
-
-    const handleOk = (e) => {
-        console.log(e)
-    }
-    const handleCancel = (e) => {
-        console.log(e)
-        setState(false)
-    }
 
 
     useEffect(() => {
@@ -41,9 +32,24 @@ const GroupTest = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                setTestlist(res)
                 console.log(res)
+                setTestlist(res)
             }).catch(console.log)
+    }
+
+    const increaseIndex = () => {
+        if (index >= testlist.length - 1) {
+            setIndex(0)
+        } else {
+            setIndex(index + 1)
+        }
+        console.log(answer)
+    }
+
+    const handleSetAnswer = (qid, ans) => {
+        const clone_ans = answer
+        clone_ans[qid] = ans
+        setAnswer(clone_ans)
     }
 
     // get Test info
@@ -69,11 +75,24 @@ const GroupTest = (props) => {
                             <div className="contentpanel">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <Typography.Title level={2}>t</Typography.Title>
+                                        <Typography.Title level={2}>
+                                            {
+                                                testlist[index]?._id
+                                            }
+                                        </Typography.Title>
                                     </div>
-                                    <div class="modal-body">...</div>
+                                    <div class="modal-body">
+                                        <Radio.Group value={ answer[testlist[index]?._id] } onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)}>
+                                            <Radio value="A" checked={answer[testlist[index]?._id] === "A"}>A. {testlist[index]?.A}</Radio>
+                                            <Radio value="B" checked={answer[testlist[index]?._id] === "B"}>B. {testlist[index]?.B}</Radio>
+                                            <Radio value="C" checked={answer[testlist[index]?._id] === "C"}>C. {testlist[index]?.C}</Radio>
+                                            <Radio value="D" checked={answer[testlist[index]?._id] === "D"}>D. {testlist[index]?.D}</Radio>
+                                        </Radio.Group>
+                                    </div>
                                 </div>
-
+                                <Button type="primary" shape="round" onClick={() => increaseIndex(index)} size="large">
+                                    Câu kế tiếp
+                                </Button>
                             </div>
                         </React.Fragment>
 
