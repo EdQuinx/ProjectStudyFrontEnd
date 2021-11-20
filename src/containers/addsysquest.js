@@ -130,7 +130,7 @@ const AddSysQuest = (props) => {
                                                 </Select>
                                             </Form.Item>
                                             <Form.Item name="question" label="Câu hỏi" rules={[{ required: true, message: 'Nhập câu hỏi' }]}>
-                                                <Input />
+                                                <Input.TextArea />
                                             </Form.Item>
                                             <Form.Item label="Image">
                                                 <Upload name="logo" listType="picture" customRequest={uploadFileQuest}>
