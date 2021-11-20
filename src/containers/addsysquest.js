@@ -12,6 +12,12 @@ import { Link, useLocation } from 'react-router-dom'
 import EquationEditor from "equation-editor-react";
 import MathQ from '../components/matheq';
 
+const IconText = ({ text }) => (
+    <Space>
+        {text}
+    </Space>
+);
+
 const AddSysQuest = (props) => {
     const [showaddquest, setShowaddquest] = useState(false)
     const [formAddQuest] = Form.useForm()
@@ -27,7 +33,7 @@ const AddSysQuest = (props) => {
     const [questList, setQuestList] = useState([])
 
     const handleGetQuestList = () => {
-        axios.get(api.api_question_system_gettest, {
+        axios.get(api.api_question_system, {
             params: {
                 username: props.username,
                 token: props.token,
@@ -42,7 +48,7 @@ const AddSysQuest = (props) => {
     const handleAddQuestList = (e) => {
         axios.post(api.api_question_system, {
             ...e,
-
+            image: imgQuest,
         }, {
             params: {
                 username: props.username,
@@ -51,8 +57,39 @@ const AddSysQuest = (props) => {
         }).then(res => res.data)
         .then(res => {
             console.log(res)
-            setQuestList(res)
+            handleGetQuestList()
+            setImgQuest("")
+            setShowaddquest(false)
         }).catch(console.log)
+    }
+
+    const [imgQuest, setImgQuest] = useState("")
+
+    const uploadFileQuest = async options => {
+        const { onSuccess, onError, file, onProgress } = options;
+        // console.log(file)
+        const fmData = new FormData();
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data"
+            },
+        };
+        fmData.append("files", file);
+        try {
+            const res = await axios.post(
+                api.api_upload_quest,
+                fmData,
+                config
+            );
+            onSuccess("Ok");
+            if (res.status === 200 && res.data.length > 0) {
+                setImgQuest(res.data[0])
+            }
+        } catch (err) {
+            console.log("Eroor: ", err);
+            const error = new Error("Some error");
+            onError({ err });
+        }
     }
 
 
@@ -72,16 +109,54 @@ const AddSysQuest = (props) => {
                                         title="Thêm quest system"
                                         onOk={() => formAddQuest.submit()}
                                     >
-                                        <EquationEditor
-                                            value={equation}
-                                            onChange={setEquation}
-                                            autoCommands="bar overline sqrt sum prod int alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omikron pi rho sigma tau upsilon phi chi psi omega Alpha Beta Gamma Aelta Epsilon Zeta Eta Theta Iota Kappa Lambda Mu Nu Xi Omikron Pi Rho Sigma Tau Upsilon Phi Chi Psi Omega rangle langle otimes neq leq ll geq gg approx dagger angle in"
-                                            autoOperatorNames="sin cos tan"
-                                        />
-                                        <MathQ value={equation} />
-
-                                        <Form form={formAddQuest}>
-
+                                        <Form form={formAddQuest} onFinish={handleAddQuestList}>
+                                            <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Nhập khối, lớp' }]}>
+                                                <Select>
+                                                    {
+                                                        api.classes.map((val) => (
+                                                            <Select.Option value={val}>Lớp {val}</Select.Option>
+                                                        ))
+                                                    }
+                                                    <Select.Option value="all">All</Select.Option>
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item name="subject" label="Môn học" rules={[{ required: true, message: 'Chọn môn học' }]}>
+                                                <Select>
+                                                    {
+                                                        api.list_sub.map((val) => (
+                                                            <Select.Option value={val}>{val}</Select.Option>
+                                                        ))
+                                                    }
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item name="question" label="Câu hỏi" rules={[{ required: true, message: 'Nhập câu hỏi' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item label="Image">
+                                                <Upload name="logo" listType="picture" customRequest={uploadFileQuest}>
+                                                    <Button icon={<UploadOutlined />}>Click to upload</Button>
+                                                </Upload>
+                                            </Form.Item>
+                                            <Form.Item name="A" label="Đáp án A" rules={[{ required: true, message: 'Nhập câu trả lời' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item name="B" label="Đáp án B" rules={[{ required: true, message: 'Nhập câu trả lời' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item name="C" label="Đáp án C" rules={[{ required: true, message: 'Nhập câu trả lời' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item name="D" label="Đáp án D" rules={[{ required: true, message: 'Nhập câu trả lời' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item name="correct" label="Đáp án đúng" rules={[{ required: true, message: 'Chọn câu trả lời' }]} initialValue="A">
+                                                <Select>
+                                                    <Select.Option value="A">A</Select.Option>
+                                                    <Select.Option value="B">B</Select.Option>
+                                                    <Select.Option value="C">C</Select.Option>
+                                                    <Select.Option value="D">D</Select.Option>
+                                                </Select>
+                                            </Form.Item>
                                         </Form>
                                     </Modal>
 
@@ -89,7 +164,40 @@ const AddSysQuest = (props) => {
                                         <Button onClick={() => setShowaddquest(!showaddquest)}>Thêm câu hỏi</Button>
                                     </div>
                                     <div className="col-sm-9">
-
+                                        <List
+                                            itemLayout="vertical"
+                                            size="large"
+                                            pagination={{
+                                                onChange: page => {
+                                                    console.log(page);
+                                                },
+                                                pageSize: 10,
+                                            }}
+                                            dataSource={questList}
+                                            renderItem={(item, index) => (
+                                                <List.Item
+                                                    key={index}
+                                                    actions={[
+                                                        <IconText text={`A. ${item.A}`} key="list-vertical-star-o" />,
+                                                        <IconText text={`B. ${item.B}`} key="list-vertical-star-o" />,
+                                                        <IconText text={`C. ${item.C}`} key="list-vertical-star-o" />,
+                                                        <IconText text={`D. ${item.D}`} key="list-vertical-star-o" />,
+                                                    ]}
+                                                    extra={ item.image.length > 0 ?
+                                                        <Image
+                                                            height={100}
+                                                            alt="logo"
+                                                            src={item.image[0]}
+                                                        /> : <></>
+                                                    }
+                                                >
+                                                    <List.Item.Meta
+                                                        title={item.question}
+                                                        description={`Đáp án đúng: ${item.correct}`}
+                                                    />
+                                                </List.Item>
+                                            )}
+                                        />
 
                                     </div>
 
