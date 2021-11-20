@@ -14,6 +14,8 @@ const GroupTest = (props) => {
     const [testlist, setTestlist] = useState([])
     const [answer, setAnswer] = useState([])
     const [index, setIndex] = useState(0)
+    const [value, setValue] = useState('');
+
     const [result, setResult] = useState({ userChoice: "", answer: "" })
 
 
@@ -43,6 +45,7 @@ const GroupTest = (props) => {
         } else {
             setIndex(index + 1)
         }
+        setValue('')
         console.log(answer)
     }
 
@@ -50,7 +53,15 @@ const GroupTest = (props) => {
         const clone_ans = answer
         clone_ans[qid] = ans
         setAnswer(clone_ans)
+        setValue(ans)
+        console.log(value)
     }
+
+    const onChange = e => {
+        console.log('radio checked', e.target.value);
+        setValue(e.target.value);
+      };
+    
 
     // get Test info
     const handleGetTestInfo = (id) => {
@@ -77,16 +88,16 @@ const GroupTest = (props) => {
                                     <div class="modal-header">
                                         <Typography.Title level={2}>
                                             {
-                                                testlist[index]?._id
+                                                testlist[index]?.question
                                             }
                                         </Typography.Title>
                                     </div>
                                     <div class="modal-body">
-                                        <Radio.Group value={ answer[testlist[index]?._id] } onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)}>
-                                            <Radio value="A" checked={answer[testlist[index]?._id] === "A"}>A. {testlist[index]?.A}</Radio>
-                                            <Radio value="B" checked={answer[testlist[index]?._id] === "B"}>B. {testlist[index]?.B}</Radio>
-                                            <Radio value="C" checked={answer[testlist[index]?._id] === "C"}>C. {testlist[index]?.C}</Radio>
-                                            <Radio value="D" checked={answer[testlist[index]?._id] === "D"}>D. {testlist[index]?.D}</Radio>
+                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer[testlist[index]?._id]}>
+                                            <Radio checked={answer[testlist[index]?._id] === "A"} value="A">A. {testlist[index]?.A}</Radio>
+                                            <Radio checked={answer[testlist[index]?._id] === "B"} value="B">B. {testlist[index]?.B}</Radio>
+                                            <Radio checked={answer[testlist[index]?._id] === "C"} value="C">C. {testlist[index]?.C}</Radio>
+                                            <Radio checked={answer[testlist[index]?._id] === "D"} value="D">D. {testlist[index]?.D}</Radio>
                                         </Radio.Group>
                                     </div>
                                 </div>
