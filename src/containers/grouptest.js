@@ -1,22 +1,26 @@
-import { Spin, List, Button, Modal, message, Form, Radio, Select, Typography, Checkbox, Row, Col, Popconfirm, Image } from 'antd';
+import { Spin, Button, Result, Radio, Typography, Row, Col, Popconfirm, Image } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
-import { useAppContext } from '../state';
 import { Link, useLocation } from 'react-router-dom'
+import { useAppContext } from '../state';
 
 const GroupTest = (props) => {
 
     const location = useLocation()
+
+    const { notisocket } = useAppContext()
+
+    const [socketnoti, setSocketnoti] = notisocket
+
     const [testlist, setTestlist] = useState([])
     const [answer, setAnswer] = useState([])
     const [index, setIndex] = useState(0)
     const [value, setValue] = useState('');
-
-    const [result, setResult] = useState({ userChoice: "", answer: "" })
+    const [result, setResult] = useState(-1)
 
 
     useEffect(() => {
@@ -67,9 +71,8 @@ const GroupTest = (props) => {
 
     const handleSetAnswer = (qid, ans) => {
         const clone_ans = answer
-        for(var i = 0; i < clone_ans.length; i ++){
-            if (clone_ans[i].questionId === qid)
-            {
+        for (var i = 0; i < clone_ans.length; i++) {
+            if (clone_ans[i].questionId === qid) {
                 clone_ans[i].answer = ans
             }
         }
@@ -96,12 +99,22 @@ const GroupTest = (props) => {
 
     // nop bai
     const handleGetResult = () => {
-                
+
         axios.post(api.api_group_test_result, {
-            test: answer
-        }).then(res => res)
-        .then(console.log)
-        .catch(console.log)
+            test: answer,
+            testId: props.match.params.testid,
+        }).then(res => res.data)
+            .then(res => {
+                setResult(res)
+                socketnoti?.emit('done test', {
+                    username: props.username, 
+                    groupId:props.match.params.groupId, 
+                    point: result, 
+                    testId: props.match.params.testid, 
+                    createAt: new Date().toString(),
+                })
+            })
+            .catch(console.log)
     }
 
     return (
@@ -111,61 +124,76 @@ const GroupTest = (props) => {
                     <Spin size='large' />
                     :
                     props.isAuthenticated ?
-                        <React.Fragment>
-                            <PageHeader icon="fa-user" page="Làm test" />
-                            <div className="contentpanel">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <Typography.Title level={3}>
+                        result < 0 ?
+                            <React.Fragment>
+                                <PageHeader icon="fa-user" page="Làm test" />
+                                <div className="contentpanel">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <Typography.Title level={3}>
+                                                {
+                                                    testlist[index]?.question
+                                                }
+                                            </Typography.Title>
                                             {
-                                                testlist[index]?.question
+                                                testlist[index]?.image !== "" ?
+                                                    <Image src={testlist[index]?.image} height="400px" />
+                                                    :
+                                                    ""
                                             }
-                                        </Typography.Title>
-                                        {
-                                            testlist[index]?.image !== "" ?
-                                            <Image src={testlist[index]?.image} height="400px" />
-                                            :
-                                            ""
-                                        }
-                                    </div>
-                                    <div class="modal-body">
-                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questionId === testlist[index]?._id)?.answer}>
-                                            <Row>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
-                                            </Row>
+                                        </div>
+                                        <div class="modal-body">
+                                            <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questionId === testlist[index]?._id)?.answer}>
+                                                <Row>
+                                                    <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
+                                                    <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
+                                                    <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
+                                                    <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
+                                                </Row>
 
-                                        </Radio.Group>
+                                            </Radio.Group>
+                                        </div>
                                     </div>
+                                    <Row style={{ marginTop: "50px" }}>
+                                        <Col span={8} style={{ textAlign: "center" }}>
+                                            <Button type="primary" shape="round" onClick={() => decreaseIndex(index)} size="large">
+                                                Câu kế trước
+                                            </Button>
+                                        </Col>
+                                        <Col span={8} style={{ textAlign: "center" }}>
+                                            <Popconfirm
+                                                title="Bạn có muốn nộp bài ?"
+                                                onConfirm={handleGetResult}
+                                            >
+                                                <Button type="primary" shape="round" size="large">
+                                                    Nộp bài
+                                                </Button>
+                                            </Popconfirm>
+                                        </Col>
+                                        <Col span={8} style={{ textAlign: "center" }}>
+                                            <Button type="primary" shape="round" onClick={() => increaseIndex(index)} size="large">
+                                                Câu kế tiếp
+                                            </Button>
+                                        </Col>
+                                    </Row>
+
                                 </div>
-                                <Row style={{ marginTop: "50px" }}>
-                                    <Col span={8} style={{ textAlign: "center" }}>
-                                        <Button type="primary" shape="round" onClick={() => decreaseIndex(index)} size="large">
-                                            Câu kế trước
-                                        </Button>
-                                    </Col>
-                                    <Col span={8} style={{ textAlign: "center" }}>
-                                        <Popconfirm
-                                            title="Bạn có muốn nộp bài ?"
-                                            onConfirm={handleGetResult}
-                                        >
-                                        <Button type="primary" shape="round" size="large">
-                                            Nộp bài
-                                        </Button>
-                                        </Popconfirm>
-                                    </Col>
-                                    <Col span={8} style={{ textAlign: "center" }}>
-                                        <Button type="primary" shape="round" onClick={() => increaseIndex(index)} size="large">
-                                            Câu kế tiếp
-                                        </Button>
-                                    </Col>
-                                </Row>
-                                
-                            </div>
-                        </React.Fragment>
-
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                                <Result
+                                    status="success"
+                                    title="Hoàn thành bài kiểm tra"
+                                    subTitle={`Bạn đã hoàn thành bài kiểm tra với: ${result} điểm.`}
+                                    extra={[
+                                        <Link to="/">
+                                            <Button type="primary" key="console">
+                                                Về Trang chủ
+                                            </Button>
+                                        </Link>,
+                                    ]}
+                                />
+                            </React.Fragment>
                         :
                         props.history.push("/signin")
             }

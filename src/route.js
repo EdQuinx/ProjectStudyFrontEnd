@@ -22,7 +22,7 @@ const BaseRouter = () => (
         <Route exact path="/chat/:groupid/tests" component={Tests} />
         <Route exact path="/chat/:groupid/tests/edit/:testid" component={EditTest} />
         <Route exact path="/system-test" component={SystemTest} />
-        <Route exact path="/group-test/:testid" component={GroupTest} />
+        <Route exact path="/group-test/:testid/:groupid" component={GroupTest} />
         <Route exact path="/system-test/:testid" component={SystemTest} />
         <Route exact path="/signin" component={SignIn} />
         <Route exact path="/signup" component={SignUp} />

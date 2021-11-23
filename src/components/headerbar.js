@@ -132,6 +132,10 @@ const HeaderBar = (props) => {
             handleGetAllNotifies()
         })
 
+        socketnoti.on('done test', (data) => {
+            console.log(data)
+        })
+
     }, [socketnoti]);
 
     return (
@@ -163,12 +167,12 @@ const HeaderBar = (props) => {
                                     {
                                         notifies.filter(res => res.isRead === false && res.type === "require do test").map(val => (
                                             <li className="new">
-                                                <Link to={`/group-test/${val.testId}`}>
+                                                <Link to={`/group-test/${val.testId}/${val.groupId}`}>
                                                     <span className="thumb">
                                                         <Avatar icon={<QuestionOutlined />} />
                                                     </span>
                                                     <span className="desc">
-                                                        <span className="name">Từ nhóm: {val.groupName} <span className="badge badge-success">new</span></span>
+                                                        <span className="name">Từ nhóm: {val.groupName} <span className="badge badge-success">mới</span></span>
                                                         <span className="msg">{val.createAt.slice(0, 24)}</span>
                                                     </span>
                                                 </Link>
