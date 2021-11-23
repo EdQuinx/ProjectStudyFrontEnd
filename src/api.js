@@ -72,13 +72,12 @@ export const list_sub = [
     "Hóa học",
     "Lịch sử",
     "Địa lý",
-    "Tiếng Anh", "Tiếng Nga", "Tiếng Pháp", "Tiếng Trung Quốc", "Tiếng Nhật", "Tiếng Đức",
+    "Tiếng Anh",
     "Công nghệ",
-    "Tin học",
-    "Âm nhạc",
-    "Mĩ thuật"
+    "GDCD",
+    "Tin học"
 ]
 
 export const classes = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+    10, 11, 12
 ]
