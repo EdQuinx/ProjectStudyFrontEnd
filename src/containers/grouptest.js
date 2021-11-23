@@ -38,7 +38,7 @@ const GroupTest = (props) => {
                 const test_data = []
                 res.map(val => {
                     test_data.push({
-                        questId: val._id,
+                        questionId: val._id,
                         answer: ""
                     })
                 })
@@ -68,7 +68,7 @@ const GroupTest = (props) => {
     const handleSetAnswer = (qid, ans) => {
         const clone_ans = answer
         for(var i = 0; i < clone_ans.length; i ++){
-            if (clone_ans[i].questId === qid)
+            if (clone_ans[i].questionId === qid)
             {
                 clone_ans[i].answer = ans
             }
@@ -99,7 +99,7 @@ const GroupTest = (props) => {
                 
         axios.post(api.api_group_test_result, {
             test: answer
-        }).then(res => res.data)
+        }).then(res => res)
         .then(console.log)
         .catch(console.log)
     }
@@ -129,12 +129,12 @@ const GroupTest = (props) => {
                                         }
                                     </div>
                                     <div class="modal-body">
-                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questId === testlist[index]?._id)?.answer}>
+                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questionId === testlist[index]?._id)?.answer}>
                                             <Row>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
-                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
                                             </Row>
 
                                         </Radio.Group>
