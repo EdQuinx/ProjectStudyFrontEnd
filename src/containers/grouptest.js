@@ -39,7 +39,7 @@ const GroupTest = (props) => {
                 res.map(val => {
                     test_data.push({
                         questId: val._id,
-                        answer: "A"
+                        answer: ""
                     })
                 })
                 setAnswer(test_data)

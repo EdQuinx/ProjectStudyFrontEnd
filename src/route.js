@@ -7,7 +7,6 @@ import Profile from "./containers/profile";
 import Chat from "./containers/chat";
 import Tests from "./containers/tests";
 import EditTest from "./containers/edittest";
-import SystemTest from "./containers/systemtest"
 import GroupTest from "./containers/grouptest"
 import SystemTest from "./containers/systemtest"
 import AddSysQuest from "./containers/addsysquest"
