@@ -9,6 +9,7 @@ import Tests from "./containers/tests";
 import EditTest from "./containers/edittest";
 import SystemTest from "./containers/systemtest"
 import GroupTest from "./containers/grouptest"
+import SystemTest from "./containers/systemtest"
 import AddSysQuest from "./containers/addsysquest"
 
 
@@ -23,6 +24,7 @@ const BaseRouter = () => (
         <Route exact path="/chat/:groupid/tests/edit/:testid" component={EditTest} />
         <Route exact path="/system-test" component={SystemTest} />
         <Route exact path="/group-test/:testid" component={GroupTest} />
+        <Route exact path="/system-test/:testid" component={SystemTest} />
         <Route exact path="/signin" component={SignIn} />
         <Route exact path="/signup" component={SignUp} />
     </Switch>
