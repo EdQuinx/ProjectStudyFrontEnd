@@ -29,6 +29,8 @@ export const api_member = `${member_service}/member`
 
 export const test_service = "http://103.90.229.216:30004"
 export const api_group_test_all = `${test_service}/group/test/all`
+export const api_group_test_id = `${test_service}/group/test/id`
+export const api_group_test_result = `${test_service}/group/result`
 export const api_group_test = `${test_service}/group/test`
 export const api_group_do_test = `${test_service}/group/dotest`
 

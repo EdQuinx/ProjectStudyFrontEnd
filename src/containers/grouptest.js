@@ -1,4 +1,4 @@
-import { Spin, List, Button, Modal, message, Form, Radio, Select, Typography, Checkbox } from 'antd';
+import { Spin, List, Button, Modal, message, Form, Radio, Select, Typography, Checkbox, Row, Col, Popconfirm, Image } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ const GroupTest = (props) => {
 
 
     useEffect(() => {
-        handleDoTest("6194c83fbaa26ae73d1de91b") // props.match.params.testid
+        handleDoTest(props.match.params.testid) // props.match.params.testid
     }, [])
 
 
@@ -34,8 +34,15 @@ const GroupTest = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                console.log(res)
                 setTestlist(res)
+                const test_data = []
+                res.map(val => {
+                    test_data.push({
+                        questId: val._id,
+                        answer: "A"
+                    })
+                })
+                setAnswer(test_data)
             }).catch(console.log)
     }
 
@@ -49,19 +56,31 @@ const GroupTest = (props) => {
         console.log(answer)
     }
 
+    const decreaseIndex = () => {
+        if (index <= 0) {
+            setIndex(0)
+        } else {
+            setIndex(index - 1)
+        }
+        setValue('')
+    }
+
     const handleSetAnswer = (qid, ans) => {
         const clone_ans = answer
-        clone_ans[qid] = ans
+        for(var i = 0; i < clone_ans.length; i ++){
+            if (clone_ans[i].questId === qid)
+            {
+                clone_ans[i].answer = ans
+            }
+        }
         setAnswer(clone_ans)
-        setValue(ans)
-        console.log(value)
     }
 
     const onChange = e => {
         console.log('radio checked', e.target.value);
         setValue(e.target.value);
-      };
-    
+    };
+
 
     // get Test info
     const handleGetTestInfo = (id) => {
@@ -72,6 +91,16 @@ const GroupTest = (props) => {
                 testId: id
             }
         })
+    }
+
+    // nop bai
+    const handleGetResult = () => {
+                
+        axios.post(api.api_group_test_result, {
+            test: answer
+        }).then(res => res.data)
+        .then(console.log)
+        .catch(console.log)
     }
 
     return (
@@ -86,24 +115,53 @@ const GroupTest = (props) => {
                             <div className="contentpanel">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <Typography.Title level={2}>
+                                        <Typography.Title level={3}>
                                             {
                                                 testlist[index]?.question
                                             }
                                         </Typography.Title>
+                                        {
+                                            testlist[index]?.image !== "" ?
+                                            <Image src={testlist[index]?.image} height="400px" />
+                                            :
+                                            ""
+                                        }
                                     </div>
                                     <div class="modal-body">
-                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer[testlist[index]?._id]}>
-                                            <Radio checked={answer[testlist[index]?._id] === "A"} value="A">A. {testlist[index]?.A}</Radio>
-                                            <Radio checked={answer[testlist[index]?._id] === "B"} value="B">B. {testlist[index]?.B}</Radio>
-                                            <Radio checked={answer[testlist[index]?._id] === "C"} value="C">C. {testlist[index]?.C}</Radio>
-                                            <Radio checked={answer[testlist[index]?._id] === "D"} value="D">D. {testlist[index]?.D}</Radio>
+                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={"A"} value={answer.find(x => x.questId === testlist[index]?._id)?.answer}>
+                                            <Row>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
+                                                <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
+                                            </Row>
+
                                         </Radio.Group>
                                     </div>
                                 </div>
-                                <Button type="primary" shape="round" onClick={() => increaseIndex(index)} size="large">
-                                    Câu kế tiếp
-                                </Button>
+                                <Row style={{ marginTop: "50px" }}>
+                                    <Col span={8} style={{ textAlign: "center" }}>
+                                        <Button type="primary" shape="round" onClick={() => decreaseIndex(index)} size="large">
+                                            Câu kế trước
+                                        </Button>
+                                    </Col>
+                                    <Col span={8} style={{ textAlign: "center" }}>
+                                        <Popconfirm
+                                            title="Bạn có muốn nộp bài ?"
+                                            onConfirm={handleGetResult}
+                                        >
+                                        <Button type="primary" shape="round" size="large">
+                                            Nộp bài
+                                        </Button>
+                                        </Popconfirm>
+                                    </Col>
+                                    <Col span={8} style={{ textAlign: "center" }}>
+                                        <Button type="primary" shape="round" onClick={() => increaseIndex(index)} size="large">
+                                            Câu kế tiếp
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                
                             </div>
                         </React.Fragment>
 
