@@ -73,6 +73,7 @@ const GroupTest = (props) => {
                 clone_ans[i].answer = ans
             }
         }
+        setValue(ans);
         setAnswer(clone_ans)
     }
 
@@ -128,7 +129,7 @@ const GroupTest = (props) => {
                                         }
                                     </div>
                                     <div class="modal-body">
-                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={"A"} value={answer.find(x => x.questId === testlist[index]?._id)?.answer}>
+                                        <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questId === testlist[index]?._id)?.answer}>
                                             <Row>
                                                 <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
                                                 <Col span={12}><Radio checked={answer.find(x => x.questId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
