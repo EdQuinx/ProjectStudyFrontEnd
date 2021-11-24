@@ -24,7 +24,7 @@ const TestLayout = (props) => {
                     <React.Fragment>
                         <LeftPanel username="Bao dep trai" colapsed={toggleleftmn} />
                         <div className="mainpanel">
-                            <HeaderBar colapseleftmn={toggleleftmn} oncolapseleftmn={setToggleletmn} />
+                            {/* <HeaderBar colapseleftmn={toggleleftmn} oncolapseleftmn={setToggleletmn} /> */}
                             {props.children}
                         </div>
                     </React.Fragment>

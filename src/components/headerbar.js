@@ -88,7 +88,7 @@ const HeaderBar = (props) => {
     useEffect(() => {
         handleGetUserInfo()
         handleGetAllNotifies()
-        
+
     }, []);
 
     const [notifies, setNotifies] = useState([])
@@ -104,14 +104,26 @@ const HeaderBar = (props) => {
             .then(res => {
                 res.reverse()
                 setNotifies(res)
-                console.log("noties: ",res)
+                console.log("noties: ", res)
             })
             .catch(console.log)
     }
 
+    const handleReadNotify = (id) => {
+        axios.patch(api.api_notify_read, {}, {
+            params: {
+                notifyId: id
+            }
+        }).then(res => res.data)
+        .then(res => {
+            console.log(res)
+            handleGetAllNotifies()
+        })
+        .catch(console.log)
+    }
+
     useEffect(() => {
-        if (socketnoti === null && props.userId !== null) 
-        {
+        if (socketnoti === null && props.userId !== null) {
             setSocketnoti(io(api.socket_noti))
         }
     }, []);
@@ -127,13 +139,21 @@ const HeaderBar = (props) => {
             notification.open({
                 message: 'Yêu cầu làm test',
                 description: 'Bạn có một yêu cầu làm test',
-                duration: 5
+                duration: 5,
+                placement: "bottomRight"
             })
             handleGetAllNotifies()
         })
 
         socketnoti.on('done test', (data) => {
             console.log(data)
+            notification.open({
+                message: 'Phê duyệt nhóm',
+                description: 'Có người đã hoàn thành bài test, hãy kiểm tra từ thông báo',
+                duration: 5,
+                placement: "bottomRight"
+            })
+            handleGetAllNotifies()
         })
 
     }, [socketnoti]);
@@ -156,30 +176,30 @@ const HeaderBar = (props) => {
                                 <i className="glyphicon glyphicon-envelope"></i>
                                 {
                                     notifies.filter(res => res.isRead === false && res.type === "require do test").length > 0 ?
-                                    <span className="badge">{notifies.filter(res => res.isRead === false && res.type === "require do test").length}</span>
-                                    : <></>
+                                        <span className="badge">{notifies.filter(res => res.isRead === false && res.type === "require do test").length}</span>
+                                        : <></>
                                 }
-                                
+
                             </button>
                             <div className="dropdown-menu dropdown-menu-head pull-right">
                                 <h5 className="title">Thông báo bài test</h5>
                                 <ul className="dropdown-list gen-list">
                                     {
-                                        notifies.filter(res => res.isRead === false && res.type === "require do test").map(val => (
+                                        notifies.filter(res => res.type === "require do test").map(val => (
                                             <li className="new">
                                                 <Link to={`/group-test/${val.testId}/${val.groupId}`}>
                                                     <span className="thumb">
                                                         <Avatar icon={<QuestionOutlined />} />
                                                     </span>
                                                     <span className="desc">
-                                                        <span className="name">Từ nhóm: {val.groupName} <span className="badge badge-success">mới</span></span>
+                                                        <span className="name">Từ nhóm: {val.groupName} { val.isRead ? "" : <span className="badge badge-success">mới</span> }</span>
                                                         <span className="msg">{val.createAt.slice(0, 24)}</span>
                                                     </span>
                                                 </Link>
                                             </li>
-                                        ) )
+                                        ))
                                     }
-                                    
+
                                 </ul>
                             </div>
                         </div>
@@ -187,23 +207,33 @@ const HeaderBar = (props) => {
 
                     <li>
                         <div className={openning === "all" ? "btn-group open" : "btn-group"}>
-                            <button  onClick={() => handleChangeOpen("all")} className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
+                            <button onClick={() => handleChangeOpen("all")} className="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
                                 <i className="glyphicon glyphicon-globe"></i>
-                                {/* <span className="badge">5</span> */}
+                                {
+                                    notifies.filter(res => res.isRead === false && res.type === "done test").length > 0 ?
+                                        <span className="badge">{notifies.filter(res => res.isRead === false && res.type === "done test").length}</span>
+                                        : <></>
+                                }
                             </button>
                             <div className="dropdown-menu dropdown-menu-head pull-right">
                                 <h5 className="title">Thông báo</h5>
-                                <ul className="dropdown-list gen-list">
-                                    <li className="new">
-                                        <a fake="">
-                                            <span className="thumb"><img src="images/photos/user4.png" alt="" /></span>
-                                            <span className="desc">
-                                                <span className="name">Zaham Sindilmaca <span className="badge badge-success">new</span></span>
-                                                <span className="msg">is now following you</span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    
+                                <ul className="dropdown-list gen-list" style={{ maxHeight: "500px", overflowX: "auto" }}>
+                                    {
+                                        notifies.filter(res => res.type === "done test").map(val => (
+                                            <li className="new">
+                                                <Link to={`/chat/${val.groupId}`} onClick={() => handleReadNotify(val._id)}>
+                                                    <span className="thumb">
+                                                        <Avatar icon={<QuestionOutlined />} />
+                                                    </span>
+                                                    <span className="desc">
+                                                        <span className="name">Có người hoàn thành bài test trong nhóm: {val.groupName} { val.isRead ? "" : <span className="badge badge-success">mới</span> }</span>
+                                                        <span className="msg">{val.createAt.slice(0, 24)}</span>
+                                                    </span>
+                                                </Link>
+                                            </li>
+                                        ))
+                                    }
+
                                 </ul>
                             </div>
                         </div>

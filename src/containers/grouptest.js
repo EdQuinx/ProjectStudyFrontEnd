@@ -109,11 +109,11 @@ const GroupTest = (props) => {
                 const sdata = {
                     username: props.username, 
                     groupId:props.match.params.groupid, 
-                    point: result, 
+                    point: res, 
                     testId: props.match.params.testid, 
                     createAt: new Date().toString(),
                 }
-                console.log(sdata)
+                // console.log(sdata)
                 socketnoti?.emit('done test', sdata)
             })
             .catch(console.log)

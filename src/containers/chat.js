@@ -53,7 +53,7 @@ const Chat = (props) => {
             setImin(true)
         }
         setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
-        // console.log(ingroups.find(data => data._id === props.match.params.groupid))
+        console.log("cureetn: ",ingroups.find(data => data._id === props.match.params.groupid))
     }, [ingroups, props.match.params.groupid])
 
     const handlegetGroupInfo = () => {
@@ -243,7 +243,7 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 setTestlist(res)
             })
             .catch(console.log)
@@ -384,6 +384,14 @@ const Chat = (props) => {
                                                                                 <li style={{ paddingLeft: "10px" }}>
                                                                                     <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} 
                                                                                     <Row>
+                                                                                        <Col span={24}>
+                                                                                            {
+                                                                                                val.results !== "" ?
+                                                                                                "Kết quả test: " + val.results.point
+                                                                                                :
+                                                                                                ""
+                                                                                            }
+                                                                                        </Col>
                                                                                         <Col span={8}><Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button></Col>
                                                                                         <Col span={8}><Button onClick={() => handleDenyToGroup(val.username)}>Deny</Button></Col>
                                                                                         <Col span={8}><Button onClick={() => handleSetTargetTest(val.username)}>Test</Button></Col>

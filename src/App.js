@@ -27,6 +27,11 @@ class App extends Component {
                                 <BaseRouter />
                             </TestLayout>
                         )} />
+                        <Route exact path="/system-test" render={() => (
+                            <TestLayout {...this.props}>
+                                <BaseRouter />
+                            </TestLayout>
+                        )} />
                         <Route exact path="/signin" render={() => (
                             <BlankLayout {...this.props}>
                                 <BaseRouter />
