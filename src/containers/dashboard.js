@@ -5,9 +5,9 @@ import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 
-import { Spin, Button, Row, Col, Descriptions, message, Modal, Form, Input, Select, List, Skeleton, Avatar } from 'antd';
+import { Spin, Button, Row, Col, Descriptions, message, Modal, Form, Input, Select, List, Popover, Avatar } from 'antd';
 
-import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined, CommentOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined, CommentOutlined, EyeOutlined } from '@ant-design/icons';
 import { Bar } from 'react-chartjs-2';
 import { useAppContext } from '../state';
 import { Link } from 'react-router-dom';
@@ -31,6 +31,7 @@ const DashBoard = (props) => {
 
     const [groupsRes, setGroupsres] = useState([])
     const [friendRes, setFriendres] = useState([])
+    const [groupInfo, setGroupInfo] = useState([])
 
     const [finding, setFinding] = useState(false)
 
@@ -110,8 +111,35 @@ const DashBoard = (props) => {
             })
     }
 
+    const showGroupInfo = (e) => {
+        const subjests = "";
+        console.log(groupInfo[e])
+        //for (var i = 0; i < e.hasSubjects.length; i++)
+        //    subjests += e.hasSubjects[i] + "; "; 
+        /*<div>
+            <p>{"Trưởng nhóm: " + e.leaderId}</p>
+            <p>{"Số thành viên: " + e.joinRequest.length}</p>
+            <p>{"Đang ôn luyện khối: " + e.class}</p>
+            <p>{"Ôn luyện môn: " + subjests}</p>
+        </div>*/
+    };
+    const handleGetGroupInfoByID = (e) => {
+        const tempGroup = groupInfo;
+        axios.get(api.api_group_server, {
+            params: {
+                groupId: e
+            }
+        }).then(res => res.data)
+            .then(res => {
+                tempGroup[e] = res;
+                setGroupInfo(tempGroup)
+        })
+            .catch(console.log)
+    }
+
     const handleFindGroup = (e) => {
         setFinding(true)
+        const tempGroup = groupInfo;
         axios.get(api.api_search_group, {
             params: {
                 username: props.username,
@@ -121,7 +149,7 @@ const DashBoard = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setFriendres([])
-                if (typeof(res) === "object") {
+                if (typeof (res) === "object") {
                     setGroupsres(res)
                 } else {
                     message.error("Không tồn tại nhóm này.")
@@ -186,25 +214,24 @@ const DashBoard = (props) => {
                 token: props.token
             }
         }).then(res => res.data)
-        .then(res => {
-            if (typeof(res) === "object") {
-                if (res.success)
-                {
-                    setWtgroups(oldArray => [...oldArray, {
-                        _id: groupId,
-                        name: groupName
-                    }]);
-                    message.success("Đã gửi yêu cầu vào nhóm.")
+            .then(res => {
+                if (typeof (res) === "object") {
+                    if (res.success) {
+                        setWtgroups(oldArray => [...oldArray, {
+                            _id: groupId,
+                            name: groupName
+                        }]);
+                        message.success("Đã gửi yêu cầu vào nhóm.")
+                    } else {
+                        message.error("Xin vào nhóm thất bại")
+                    }
                 } else {
-                    message.error("Xin vào nhóm thất bại")
+                    message.error(res)
                 }
-            } else {
-                message.error(res)
-            }
-        })
-        .catch(() => {
-            message.error("Xin vào nhóm thất bại")
-        })
+            })
+            .catch(() => {
+                message.error("Xin vào nhóm thất bại")
+            })
     }
 
     return (
@@ -349,13 +376,20 @@ const DashBoard = (props) => {
                                                             itemLayout="horizontal"
                                                             dataSource={groupsRes}
                                                             renderItem={item => (
+
+                                                                
                                                                 <List.Item>
                                                                     <List.Item.Meta
                                                                         avatar={<Avatar icon={<CommentOutlined />} />}
                                                                         title={<b>{item.groupName}</b>}
                                                                     />
+                                                                    {handleGetGroupInfoByID(item?.groupId)}
+                                                                    <Popover content={() => showGroupInfo(groupInfo[item?.groupId])} title={"Thông tin nhóm: " + item.groupName}>
+                                                                    <EyeOutlined style={{ width: "50px" }}/>
+                                                                    </Popover>                                               
                                                                     <Button type="primary" onClick={() => handleRequestJoinGroup(item.groupId, item.groupName)}>Xin vào</Button>
                                                                 </List.Item>
+
                                                             )}
                                                         />
                                                         :

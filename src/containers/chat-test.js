@@ -405,83 +405,83 @@ const ChatTest = (props) => {
 
 
                                                 </div>
-                                                <div class="col-sm-9 col-xs-12 chat" style={{overflow: "hidden", outline: "none"}}  tabindex="5001">
-          <div class="col-inside-lg decor-default">
-                                                <div className="btn-group mr10">
-                                                    {/* <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Next Email"><i className="glyphicon glyphicon-chevron-right"></i></button> */}
-                                                    <div className="btn tooltips">
-                                                        <b>Status:</b> {socketConnected === 0 ? <Badge status="default" /> : socketConnected === 1 ? <Badge size="default" status="success" /> : socketConnected === 2 ? <Badge status="default" status="processing" /> : <Badge status="default" />}
-                                                    </div>
+                                                <div class="col-sm-9 col-xs-12 chat" style={{ overflow: "hidden", outline: "none" }} tabindex="5001">
+                                                    <div class="col-inside-lg decor-default">
+                                                        <div className="btn-group mr10">
+                                                            {/* <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Next Email"><i className="glyphicon glyphicon-chevron-right"></i></button> */}
+                                                            <div className="btn tooltips">
+                                                                <b>Status:</b> {socketConnected === 0 ? <Badge status="default" /> : socketConnected === 1 ? <Badge size="default" status="success" /> : socketConnected === 2 ? <Badge status="default" status="processing" /> : <Badge status="default" />}
+                                                            </div>
 
-                                                </div>
-
-                                                {/* messages */}
-                                                
-                                                <div className="chat-body">
-                                                    <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
-                                                        {//"http://super-uae.com/images/profile.png"
-
-                                                            data.map((val) => (
-                                                                <div className={JSON.parse(val.sender).username === props.username ?
-                                                                    "answer right"
-                                                                    :
-                                                                    "answer left"}>
-                                                                    <div className="avatar">
-                                                                        <img src={JSON.parse(val.sender).avatar === "" ?
-                                                                            "http://super-uae.com/images/profile.png"
-                                                                            :
-                                                                            JSON.parse(val.sender).avatar} alt="User name"></img>
-                                                                        {/*trang thai hoat dong*/}
-                                                                        <div className="status online"></div>
-                                                                    </div>
-                                                                    <div className="name">{JSON.parse(val.sender).fullname}</div>
-                                                                    <div className="text" onLoad={scrollToBottom}>{
-                                                                        val.type === "image" ?
-                                                                            <Image src={val.message} width="200px" />
-                                                                            :
-                                                                            val.type === "file" ?
-                                                                                <Typography.Link href={val.message} target="_blank">
-                                                                                    <LinkOutlined /> {val.message.split("/")[val.message.split("/").length - 1].split("-")[val.message.split("/")[val.message.split("/").length - 1].split("-").length - 1]}
-                                                                                </Typography.Link>
-                                                                                :
-                                                                                val.type === "video" ?
-                                                                                    <video width="400" controls onLoad={scrollToBottom}>
-                                                                                        <source src={val.message} />
-                                                                                    </video>
-                                                                                    :
-                                                                                    val.message
-                                                                    }</div>
-                                                                    <div className="time">5 min ago</div>
-                                                                </div>
-                                                            ))
-                                                        }
-                                                        <div ref={messagesEndRef} />
-                                                    </div>
-                                                </div>
-
-                                                {/* send message */}
-                                                <div className="read-panel">
-                                                    <div className="media">
-                                                        <a className="pull-left">
-                                                            <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
-                                                        </a>
-                                                        <div className="media-body">
-                                                            <Input.TextArea value={messag} rows={2} onChange={(e) => setMessag(e.target.value)} onKeyUp={(e) => {
-                                                                if (e.key == "Enter") {
-                                                                    handleSendMsg()
-                                                                }
-                                                            }} />
-                                                            <Divider />
-                                                            <Button className="mr5" type="primary" onClick={handleSendMsg}>Gửi</Button>
-
-                                                            <Upload {...props_upload} multiple customRequest={uploadFile}>
-                                                                <Button icon={<UploadOutlined />}>Upload</Button>
-                                                            </Upload>
                                                         </div>
+
+                                                        {/* messages */}
+
+                                                        <div className="chat-body">
+                                                            <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
+                                                                {//"http://super-uae.com/images/profile.png"
+
+                                                                    data.map((val) => (
+                                                                        <div className={JSON.parse(val.sender).username === props.username ?
+                                                                            "answer right"
+                                                                            :
+                                                                            "answer left"}>
+                                                                            <div className="avatar">
+                                                                                <img src={JSON.parse(val.sender).avatar === "" ?
+                                                                                    "http://super-uae.com/images/profile.png"
+                                                                                    :
+                                                                                    JSON.parse(val.sender).avatar} alt="User name"></img>
+                                                                                {/*trang thai hoat dong*/}
+                                                                                <div className="status online"></div>
+                                                                            </div>
+                                                                            <div className="name">{JSON.parse(val.sender).fullname}</div>
+                                                                            <div className="text" onLoad={scrollToBottom}>{
+                                                                                val.type === "image" ?
+                                                                                    <Image src={val.message} width="200px" />
+                                                                                    :
+                                                                                    val.type === "file" ?
+                                                                                        <Typography.Link href={val.message} target="_blank">
+                                                                                            <LinkOutlined /> {val.message.split("/")[val.message.split("/").length - 1].split("-")[val.message.split("/")[val.message.split("/").length - 1].split("-").length - 1]}
+                                                                                        </Typography.Link>
+                                                                                        :
+                                                                                        val.type === "video" ?
+                                                                                            <video width="400" controls onLoad={scrollToBottom}>
+                                                                                                <source src={val.message} />
+                                                                                            </video>
+                                                                                            :
+                                                                                            val.message
+                                                                            }</div>
+                                                                            <div className="time">5 min ago</div>
+                                                                        </div>
+                                                                    ))
+                                                                }
+                                                                <div ref={messagesEndRef} />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* send message */}
+                                                        <div className="read-panel">
+                                                            <div className="media">
+                                                                <a className="pull-left">
+                                                                    <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
+                                                                </a>
+                                                                <div className="media-body">
+                                                                    <Input.TextArea value={messag} rows={2} onChange={(e) => setMessag(e.target.value)} onKeyUp={(e) => {
+                                                                        if (e.key == "Enter") {
+                                                                            handleSendMsg()
+                                                                        }
+                                                                    }} />
+                                                                    <Divider />
+                                                                    <Button className="mr5" type="primary" onClick={handleSendMsg}>Gửi</Button>
+
+                                                                    <Upload {...props_upload} multiple customRequest={uploadFile}>
+                                                                        <Button icon={<UploadOutlined />}>Upload</Button>
+                                                                    </Upload>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
-                                                </div>
-                                                
-                                                </div>
                                                 </div>
 
                                             </div>
