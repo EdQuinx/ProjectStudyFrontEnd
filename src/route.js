@@ -5,6 +5,7 @@ import SignUp from "./containers/signup";
 import DashBoard from "./containers/dashboard";
 import Profile from "./containers/profile";
 import Chat from "./containers/chat";
+import ChatTest from "./containers/chat-test";
 import Tests from "./containers/tests";
 import EditTest from "./containers/edittest";
 import GroupTest from "./containers/grouptest"
@@ -18,6 +19,7 @@ const BaseRouter = () => (
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/chat" component={Chat} />
         <Route exact path="/chat/:groupid" component={Chat} />
+        <Route exact path="/chat-test/:groupid" component={ChatTest} />
         <Route exact path="/add-sys-quest" component={AddSysQuest} />
         <Route exact path="/chat/:groupid/tests" component={Tests} />
         <Route exact path="/chat/:groupid/tests/edit/:testid" component={EditTest} />

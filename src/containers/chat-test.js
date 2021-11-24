@@ -14,7 +14,7 @@ import io from "socket.io-client";
 
 const { TextArea } = Input;
 
-const Chat = (props) => {
+const ChatTest = (props) => {
 
     const [imin, setImin] = useState(false)
     const { uinfo, igroups, wgroups, notisocket } = useAppContext()
@@ -64,10 +64,10 @@ const Chat = (props) => {
                 groupId: props.match.params.groupid
             }
         }).then(res => res.data)
-        .then(res => {
-            setGroupInfo(res)
-        })
-        .catch(console.log)
+            .then(res => {
+                setGroupInfo(res)
+            })
+            .catch(console.log)
     }
 
     const handlDeleteGroup = () => {
@@ -201,14 +201,13 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                if (res?.success)
-                {
+                if (res?.success) {
                     message.success("Duyệt vào nhóm thành công")
                 }
             }).catch(console.log)
     }
 
-    const handleDenyToGroup = (uid) => { 
+    const handleDenyToGroup = (uid) => {
         axios.patch(api.api_group_deny, {
             groupId: props.match.params.groupid,
             username: uid,
@@ -220,8 +219,7 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                if (res?.success)
-                {
+                if (res?.success) {
                     message.success("Đã từ chối nhóm")
                 }
             }).catch(console.log)
@@ -250,8 +248,7 @@ const Chat = (props) => {
     }
 
     const handleSetTargetTest = (username) => {
-        if (showChooseTest === username)
-        {
+        if (showChooseTest === username) {
             setShowChooseTest("")
         } else {
             setShowChooseTest(username)
@@ -260,12 +257,12 @@ const Chat = (props) => {
 
     const handleSendTestRequest = (e) => {
         const sdata = {
-            groupId: props.match.params.groupid, 
-            username: showChooseTest, 
+            groupId: props.match.params.groupid,
+            username: showChooseTest,
             testId: e.testId,
             createAt: new Date().toString(),
         }
-        // console.log(sdata)
+        console.log(sdata)
         socketnoti.emit('require do test', sdata)
         message.success("Đã gửi yêu cầu làm bài test")
         setShowChooseTest("")
@@ -341,74 +338,75 @@ const Chat = (props) => {
                                             <div className="panel-body">
 
                                                 <div className="pull-right">
-                                                    
+
                                                     {
                                                         groupInfo?.leaderId === props.userId ?
-                                                        <React.Fragment>
-                                                            <div className="btn-group mr10">
-                                                                <Tooltip title="Xoá group">
-                                                                    <Popconfirm placement="bottom" title={"Bạn có chắc chắn xoá group ?"} onConfirm={handlDeleteGroup} okText="Yes" cancelText="No">
-                                                                        <Button size="small" icon={<DeleteOutlined />} />
-                                                                    </Popconfirm>
-                                                                </Tooltip>
-                                                            </div>
-                                                            <div className="btn-group mr10">
-                                                                <div className={dropmenu === "userrequest" ? "btn-group nomargin open" : "btn-group nomargin"}>
-                                                                    <Badge count={current?.joinRequest.length}>
-                                                                        <button onClick={() => handleSetmenu("userrequest")} data-toggle="dropdown" className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
-                                                                            <UsergroupAddOutlined />
-                                                                            <span className="caret"></span>
-                                                                        </button>
-                                                                    </Badge>
-                                                                    <Modal visible={showChooseTest}
-                                                                        onCancel={() => setShowChooseTest("")}
-                                                                        onOk={() => picktest.submit()}
-                                                                        title="Gửi yêu cầu làm test"
-                                                                    >
-                                                                        <Form form={picktest} onFinish={handleSendTestRequest} >
-                                                                            <Form.Item label="Chọn bài test" name="testId" initialValue="">
-                                                                                <Select>
-                                                                                    {
-                                                                                        testlist.map(val => (
-                                                                                            <Select.Option value={val._id}>{val.subject}</Select.Option>
-                                                                                        ))
-                                                                                    }
-                                                                                </Select>
-                                                                            </Form.Item>
-                                                                        </Form>
-                                                                    </Modal>
-
-                                                                    <ul className="dropdown-menu" style={{ minWidth: `${250}px`, "left": "-152px", maxHeight: "500px", overflowY: "auto" }}>
-                                                                        {
-                                                                            current?.joinRequest.map((val) => (
-                                                                                <li style={{ paddingLeft: "10px" }}>
-                                                                                    <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username} 
-                                                                                    <Row>
-                                                                                        <Col span={8}><Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button></Col>
-                                                                                        <Col span={8}><Button onClick={() => handleDenyToGroup(val.username)}>Deny</Button></Col>
-                                                                                        <Col span={8}><Button onClick={() => handleSetTargetTest(val.username)}>Test</Button></Col>
-                                                                                    </Row>
-                                                                                    <Divider />
-                                                                                </li>
-                                                                            ))
-                                                                        }
-                                                                    </ul>
+                                                            <React.Fragment>
+                                                                <div className="btn-group mr10">
+                                                                    <Tooltip title="Xoá group">
+                                                                        <Popconfirm placement="bottom" title={"Bạn có chắc chắn xoá group ?"} onConfirm={handlDeleteGroup} okText="Yes" cancelText="No">
+                                                                            <Button size="small" icon={<DeleteOutlined />} />
+                                                                        </Popconfirm>
+                                                                    </Tooltip>
                                                                 </div>
-                                                            </div>
-                                                            <div className="btn-group mr10">
-                                                                <Link to={location.pathname + "/tests"} className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
-                                                                    QL Test
-                                                                </Link>
-                                                            </div>
-                                                        </React.Fragment>
-                                                        : <></>
-                                                    }
-                                                    
+                                                                <div className="btn-group mr10">
+                                                                    <div className={dropmenu === "userrequest" ? "btn-group nomargin open" : "btn-group nomargin"}>
+                                                                        <Badge count={current?.joinRequest.length}>
+                                                                            <button onClick={() => handleSetmenu("userrequest")} data-toggle="dropdown" className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
+                                                                                <UsergroupAddOutlined />
+                                                                                <span className="caret"></span>
+                                                                            </button>
+                                                                        </Badge>
+                                                                        <Modal visible={showChooseTest}
+                                                                            onCancel={() => setShowChooseTest("")}
+                                                                            onOk={() => picktest.submit()}
+                                                                            title="Gửi yêu cầu làm test"
+                                                                        >
+                                                                            <Form form={picktest} onFinish={handleSendTestRequest} >
+                                                                                <Form.Item label="Chọn bài test" name="testId" initialValue="">
+                                                                                    <Select>
+                                                                                        {
+                                                                                            testlist.map(val => (
+                                                                                                <Select.Option value={val._id}>{val.subject}</Select.Option>
+                                                                                            ))
+                                                                                        }
+                                                                                    </Select>
+                                                                                </Form.Item>
+                                                                            </Form>
+                                                                        </Modal>
 
-                                                    
+                                                                        <ul className="dropdown-menu" style={{ minWidth: `${250}px`, "left": "-152px", maxHeight: "500px", overflowY: "auto" }}>
+                                                                            {
+                                                                                current?.joinRequest.map((val) => (
+                                                                                    <li style={{ paddingLeft: "10px" }}>
+                                                                                        <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username}
+                                                                                        <Row>
+                                                                                            <Col span={8}><Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button></Col>
+                                                                                            <Col span={8}><Button onClick={() => handleDenyToGroup(val.username)}>Deny</Button></Col>
+                                                                                            <Col span={8}><Button onClick={() => handleSetTargetTest(val.username)}>Test</Button></Col>
+                                                                                        </Row>
+                                                                                        <Divider />
+                                                                                    </li>
+                                                                                ))
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="btn-group mr10">
+                                                                    <Link to={location.pathname + "/tests"} className="btn btn-sm btn-white dropdown-toggle tooltips" type="button" title="Move to Folder">
+                                                                        QL Test
+                                                                    </Link>
+                                                                </div>
+                                                            </React.Fragment>
+                                                            : <></>
+                                                    }
+
+
+
 
                                                 </div>
-
+                                                <div class="col-sm-9 col-xs-12 chat" style={{overflow: "hidden", outline: "none"}}  tabindex="5001">
+          <div class="col-inside-lg decor-default">
                                                 <div className="btn-group mr10">
                                                     {/* <button className="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Read Next Email"><i className="glyphicon glyphicon-chevron-right"></i></button> */}
                                                     <div className="btn tooltips">
@@ -418,45 +416,47 @@ const Chat = (props) => {
                                                 </div>
 
                                                 {/* messages */}
-                                                <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
-                                                    {
-                                                        data.map((val) => (
-                                                            <div className="read-panel">
-                                                                <div className="media">
-                                                                    <a className="pull-left">
-                                                                        {
-                                                                            JSON.parse(val.sender).avatar === "" ?
-                                                                                <Avatar size={40} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
-                                                                                :
-                                                                                <Avatar size={40} src={<Image src={JSON.parse(val.sender).avatar} />} style={{ marginRight: "5px" }} />
-                                                                        }
-                                                                    </a>
-                                                                    <div className="media-body">
-                                                                        <span className="media-meta pull-right">{val.time}</span>
-                                                                        <h4 className="text-primary">{JSON.parse(val.sender).fullname}</h4>
-                                                                    </div>
-                                                                </div>
+                                                
+                                                <div className="chat-body">
+                                                    <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
+                                                        {//"http://super-uae.com/images/profile.png"
 
-                                                                <h4 className="email-subject" onLoad={scrollToBottom}>{
-                                                                    val.type === "image" ?
-                                                                        <Image src={val.message} width="200px" />
+                                                            data.map((val) => (
+                                                                <div className={JSON.parse(val.sender).username === props.username ?
+                                                                    "answer right"
                                                                     :
-                                                                    val.type === "file" ?
-                                                                        <Typography.Link href={val.message} target="_blank">
-                                                                            <LinkOutlined /> {val.message.split("/")[val.message.split("/").length - 1].split("-")[val.message.split("/")[val.message.split("/").length - 1].split("-").length - 1]}
-                                                                        </Typography.Link>
-                                                                    :
-                                                                    val.type === "video" ?
-                                                                        <video width="400" controls onLoad={scrollToBottom}>
-                                                                            <source src={val.message} />
-                                                                        </video>
-                                                                    :
-                                                                        val.message
-                                                                }</h4>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                    <div ref={messagesEndRef} />
+                                                                    "answer left"}>
+                                                                    <div className="avatar">
+                                                                        <img src={JSON.parse(val.sender).avatar === "" ?
+                                                                            "http://super-uae.com/images/profile.png"
+                                                                            :
+                                                                            JSON.parse(val.sender).avatar} alt="User name"></img>
+                                                                        {/*trang thai hoat dong*/}
+                                                                        <div className="status online"></div>
+                                                                    </div>
+                                                                    <div className="name">{JSON.parse(val.sender).fullname}</div>
+                                                                    <div className="text" onLoad={scrollToBottom}>{
+                                                                        val.type === "image" ?
+                                                                            <Image src={val.message} width="200px" />
+                                                                            :
+                                                                            val.type === "file" ?
+                                                                                <Typography.Link href={val.message} target="_blank">
+                                                                                    <LinkOutlined /> {val.message.split("/")[val.message.split("/").length - 1].split("-")[val.message.split("/")[val.message.split("/").length - 1].split("-").length - 1]}
+                                                                                </Typography.Link>
+                                                                                :
+                                                                                val.type === "video" ?
+                                                                                    <video width="400" controls onLoad={scrollToBottom}>
+                                                                                        <source src={val.message} />
+                                                                                    </video>
+                                                                                    :
+                                                                                    val.message
+                                                                    }</div>
+                                                                    <div className="time">5 min ago</div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                        <div ref={messagesEndRef} />
+                                                    </div>
                                                 </div>
 
                                                 {/* send message */}
@@ -479,6 +479,9 @@ const Chat = (props) => {
                                                             </Upload>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                
+                                                </div>
                                                 </div>
 
                                             </div>
@@ -519,4 +522,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat)
+export default connect(mapStateToProps, mapDispatchToProps)(ChatTest)
