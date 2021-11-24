@@ -265,7 +265,7 @@ const Chat = (props) => {
             testId: e.testId,
             createAt: new Date().toString(),
         }
-        console.log(sdata)
+        // console.log(sdata)
         socketnoti.emit('require do test', sdata)
         message.success("Đã gửi yêu cầu làm bài test")
         setShowChooseTest("")

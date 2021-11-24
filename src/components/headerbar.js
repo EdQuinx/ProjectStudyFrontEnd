@@ -127,7 +127,7 @@ const HeaderBar = (props) => {
             notification.open({
                 message: 'Yêu cầu làm test',
                 description: 'Bạn có một yêu cầu làm test',
-                duration: 5,
+                duration: 5
             })
             handleGetAllNotifies()
         })
