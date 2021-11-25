@@ -134,6 +134,9 @@ const SystemTest = (props) => {
         setNopbai(true)
         axios.post(api.api_system_test_result, {
             test: answer,
+            class: classs,
+            subject: subj,
+            time: timee
         }, {
             params: {
                 username: props.username,
