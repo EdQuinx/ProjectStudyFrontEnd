@@ -31,51 +31,9 @@ const DashBoard = (props) => {
 
     const [groupsRes, setGroupsres] = useState([])
     const [friendRes, setFriendres] = useState([])
-    const [groupInfo, setGroupInfo] = useState([])
+    const [groupInfo, setGroupInfo] = useState(null)
 
     const [finding, setFinding] = useState(false)
-
-    //socket stuffs
-    // const [socket, setSocket] = useState(null);
-    // const [socketConnected, setSocketConnected] = useState(false);
-
-    // useEffect(() => {
-    //     setSocket(io(api.socket_chat))
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!socket) return;
-
-    //     socket.on('connect', () => {
-    //         setSocketConnected(socket.connected);
-    //     });
-    //     socket.on('disconnect', () => {
-    //         setSocketConnected(socket.connected);
-    //     });
-
-    // }, [socket]);
-
-    // const handleSocketConnection = () => {
-    //     if (socketConnected)
-    //         socket.disconnect();
-    //     else {
-    //         socket.connect();
-    //     }
-    // }
-    // <div>
-    //     <div>
-    //         <b>Connection status:</b> {socketConnected ? 'Connected' : 'Disconnected'}
-    //     </div>
-    //     <input
-    //         type="button"
-    //         style={{ marginTop: 10 }}
-    //         value={socketConnected ? 'Disconnect' : 'Connect'}
-    //         onClick={handleSocketConnection} />
-    // </div>
-
-    //end socket stuffs
-
-
 
     const handleCreateGroup = (e) => {
         setFinding(true)
@@ -111,35 +69,42 @@ const DashBoard = (props) => {
             })
     }
 
-    const showGroupInfo = (e) => {
-        const subjests = "";
-        console.log(groupInfo[e])
-        //for (var i = 0; i < e.hasSubjects.length; i++)
-        //    subjests += e.hasSubjects[i] + "; "; 
-        /*<div>
-            <p>{"Trưởng nhóm: " + e.leaderId}</p>
-            <p>{"Số thành viên: " + e.joinRequest.length}</p>
-            <p>{"Đang ôn luyện khối: " + e.class}</p>
-            <p>{"Ôn luyện môn: " + subjests}</p>
-        </div>*/
-    };
-    const handleGetGroupInfoByID = (e) => {
-        const tempGroup = groupInfo;
-        axios.get(api.api_group_server, {
-            params: {
-                groupId: e
-            }
-        }).then(res => res.data)
+    const showGroupInfo = () => {
+
+        return (
+            <Spin spinning={groupInfo===null}>
+                <div>
+                    <p>Số member: {groupInfo?.memberIds.length}</p>
+                    <p>Môn học tốt: {groupInfo?.hasSubjects.join(", ")}</p>
+                    <p>Môn học yếu: {groupInfo?.requiredSubjects.join(", ")}</p>
+                </div>
+            </Spin>
+        )
+    }
+
+    const handleGetGroupById = (e, id) => {
+        if (e)
+        {
+            console.log("groupid: ", id)
+            axios.get(api.api_group_user, {
+                params: {
+                    username: props.username,
+                    token: props.token,
+                    groupId: id
+                }
+            }).then(res => res.data)
             .then(res => {
-                tempGroup[e] = res;
-                setGroupInfo(tempGroup)
-        })
+                console.log("get gr: ", res)
+                setGroupInfo(res)
+            })
             .catch(console.log)
+        } else {
+            setGroupInfo(null)
+        }
     }
 
     const handleFindGroup = (e) => {
         setFinding(true)
-        const tempGroup = groupInfo;
         axios.get(api.api_search_group, {
             params: {
                 username: props.username,
@@ -381,11 +346,12 @@ const DashBoard = (props) => {
                                                                 <List.Item>
                                                                     <List.Item.Meta
                                                                         avatar={<Avatar icon={<CommentOutlined />} />}
-                                                                        title={<b>{item.groupName}</b>}
+                                                                        title={
+                                                                            <b>{item.groupName}</b>
+                                                                        }
                                                                     />
-                                                                    {handleGetGroupInfoByID(item?.groupId)}
-                                                                    <Popover content={() => showGroupInfo(groupInfo[item?.groupId])} title={"Thông tin nhóm: " + item.groupName}>
-                                                                    <EyeOutlined style={{ width: "50px" }}/>
+                                                                    <Popover onVisibleChange={(e) => handleGetGroupById(e, item.groupId)} content={showGroupInfo} title={"Thông tin nhóm: " + item.groupName}>
+                                                                        <EyeOutlined style={{ width: "50px" }}/>
                                                                     </Popover>                                               
                                                                     <Button type="primary" onClick={() => handleRequestJoinGroup(item.groupId, item.groupName)}>Xin vào</Button>
                                                                 </List.Item>

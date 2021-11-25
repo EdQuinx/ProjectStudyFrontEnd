@@ -445,7 +445,7 @@ const Chat = (props) => {
                                                                     </div>
                                                                 </div>
 
-                                                                <h4 className="email-subject" onLoad={scrollToBottom}>{
+                                                                <h4 className="email-subject" onLoad={scrollToBottom} style={{ lineBreak: "anywhere" }}>{
                                                                     val.type === "image" ?
                                                                         <Image src={val.message} width="200px" />
                                                                     :

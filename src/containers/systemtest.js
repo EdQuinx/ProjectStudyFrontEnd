@@ -188,6 +188,16 @@ const SystemTest = (props) => {
             .then(res => res.data)
             .then(res => {
                 console.log(res)
+                setTestlist(res.questionList)
+                const test_data = []
+                res.questionList.map(val => {
+                    test_data.push({
+                        questionId: val._id,
+                        answer: ""
+                    })
+                })
+                setAnswer(test_data)
+                setCdtime(Date.now() + res.time * 60000 + 3000)
                 setIsload(false)
             })
             .catch(e => {
