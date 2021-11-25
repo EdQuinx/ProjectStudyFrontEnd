@@ -23,6 +23,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "jshint-stylish": "^1.0.0",
     "load-grunt-tasks": "^0.6.0",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.5",
     "react-countdown": "^2.3.2",
