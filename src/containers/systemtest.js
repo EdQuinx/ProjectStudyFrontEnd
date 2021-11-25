@@ -19,11 +19,13 @@ const SystemTest = (props) => {
     const [value, setValue] = useState('');
     const [result, setResult] = useState(-1)
     const [isload, setIsload] = useState(false)
-
     const [oldTest, setOldTest] = useState([])
-
     const [cdtime, setCdtime] = useState(Date.now() + 10000)
     const [nopbai, setNopbai] = useState(false)
+
+    const [subj, setSubj] = useState("")
+    const [classs, setClasss] = useState(10)
+    const [timee, setTimee] = useState(20)
 
     useEffect(() => {
         handleCheckOldTest()
@@ -32,8 +34,7 @@ const SystemTest = (props) => {
 
     const renderer = ({ hours, minutes, seconds, completed }) => {
         if (completed) {
-            if (!nopbai)
-            {
+            if (!nopbai) {
                 handleGetResult()
             }
             return "Bài thi kết thúc, vui lòng chờ kết quả";
@@ -50,6 +51,11 @@ const SystemTest = (props) => {
             const now = new Date()
             setCdtime(Date.now() + (continue_test.time * 60000 - (now - cv)))
             setTestlist(continue_test.test)
+
+            setTimee(continue_test.time)
+            setSubj(continue_test.subject)
+            setClasss(continue_test.class)
+
             const test_data = []
             continue_test.test.map(val => {
                 test_data.push({
@@ -79,29 +85,6 @@ const SystemTest = (props) => {
                 console.log("oldtest", res)
             })
             .catch(console.log)
-    }
-
-
-    // get question list
-    const handleDoTest = (id) => {
-        axios.get(api.api_group_do_test, {
-            params: {
-                username: props.username,
-                token: props.token,
-                testId: id
-            }
-        }).then(res => res.data)
-            .then(res => {
-                setTestlist(res)
-                const test_data = []
-                res.map(val => {
-                    test_data.push({
-                        questionId: val._id,
-                        answer: ""
-                    })
-                })
-                setAnswer(test_data)
-            }).catch(console.log)
     }
 
     const increaseIndex = () => {
@@ -160,7 +143,7 @@ const SystemTest = (props) => {
             .then(res => {
                 setIsload(false)
                 console.log("result", res)
-                // setResult(res)
+                setResult(res.result)
             })
             .catch(console.log)
     }
@@ -176,6 +159,10 @@ const SystemTest = (props) => {
             e.number = 40
             time = 60
         }
+        setTimee(e.time)
+        setSubj(e.subject)
+        setClasss(e.class)
+
         axios.post(api.api_system_test_get, {
             ...e,
             time: time
