@@ -136,7 +136,8 @@ const SystemTest = (props) => {
             test: answer,
             class: classs,
             subject: subj,
-            time: timee
+            time: timee,
+            createAt: new Date().toString(),
         }, {
             params: {
                 username: props.username,
@@ -146,7 +147,7 @@ const SystemTest = (props) => {
             .then(res => {
                 setIsload(false)
                 console.log("result", res)
-                setResult(res.result)
+                setResult(res.result?.point)
             })
             .catch(console.log)
     }

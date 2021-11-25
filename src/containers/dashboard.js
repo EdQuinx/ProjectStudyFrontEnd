@@ -199,6 +199,36 @@ const DashBoard = (props) => {
             })
     }
 
+    useEffect(() => {
+        handleGetResultTest()
+    }, [])
+
+    const [dataResult, setDataResult] = useState([])
+
+    const handleGetResultTest = () => {
+        setDataResult([])
+        api.list_sub.map(val => {
+            axios.get(api.api_history_result, {
+                params: {
+                    username: props.username,
+                    token: props.token,
+                    subject: val
+                }
+            })
+            .then(res => res.data)
+            .then(res => {
+                if(res.length > 0)
+                {
+                    setDataResult(old => [...old, {
+                        "subject" : val,
+                        "points" : res.map(val => val.point).slice(-10)
+                    }])
+                }
+            })
+            .catch(console.log)
+        })
+    }
+
     return (
         <React.Fragment>
             {
@@ -375,30 +405,34 @@ const DashBoard = (props) => {
                                                             />
                                                             :
                                                             <Row gutter={[16, 16]}>
-                                                                <Col className="gutter-row" span={24}>
-                                                                    <Descriptions title="Toán" bordered>
-                                                                        <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                                        <Descriptions.Item label="Thời gian làm bài" span={2}>20 phút</Descriptions.Item>
-                                                                        <Descriptions.Item label="Biểu đồ kết quả" span={3}>
-                                                                            <Bar
-                                                                                data={{
-                                                                                    labels: ['T1', 'T2', 'T3', 'T4', 'T5'],
-                                                                                    datasets: [
-                                                                                        {
-                                                                                            label: 'Điểm',
-                                                                                            backgroundColor: 'rgba(75,192,192,1)',
-                                                                                            borderColor: 'rgba(0,0,0,1)',
-                                                                                            borderWidth: 1,
-                                                                                            data: [9, 8, 10, 8, 9]
-                                                                                        }
-                                                                                    ]
-                                                                                }}
-                                                                                height={150}
-                                                                                options={{ maintainAspectRatio: false }}
-                                                                            />
-                                                                        </Descriptions.Item>
-                                                                    </Descriptions>
-                                                                </Col>
+                                                                {
+                                                                    dataResult.map((val, index) => (
+                                                                        <Col className="gutter-row" span={24} key={`result-${index}`}>
+                                                                            <Descriptions title={val.subject} bordered>
+                                                                                <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
+                                                                                <Descriptions.Item label="Thời gian làm bài" span={2}>20 phút</Descriptions.Item>
+                                                                                <Descriptions.Item label="Biểu đồ kết quả" span={3}>
+                                                                                    <Bar
+                                                                                        data={{
+                                                                                            labels: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10'],
+                                                                                            datasets: [
+                                                                                                {
+                                                                                                    label: 'Điểm',
+                                                                                                    backgroundColor: 'rgba(75,192,192,1)',
+                                                                                                    borderColor: 'rgba(0,0,0,1)',
+                                                                                                    borderWidth: 1,
+                                                                                                    data: val.points
+                                                                                                }
+                                                                                            ]
+                                                                                        }}
+                                                                                        height={150}
+                                                                                        options={{ maintainAspectRatio: false }}
+                                                                                    />
+                                                                                </Descriptions.Item>
+                                                                            </Descriptions>
+                                                                        </Col>
+                                                                    ))
+                                                                }
                                                             </Row>
                                                 }
 

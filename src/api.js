@@ -46,6 +46,7 @@ export const api_question_system = `${question_service}/system/question`
 
 export const history_service = "http://103.90.229.216:30007"
 export const api_history_oldtest = `${history_service}/test`
+export const api_history_result = `${history_service}/result/history`
 
 export const upload_service = "http://103.90.229.216:30010"
 export const api_upload_chat = `${upload_service}/upload/messages`
