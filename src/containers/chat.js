@@ -106,7 +106,7 @@ const Chat = (props) => {
     const messagesEndRef = useRef(null)
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
@@ -426,6 +426,7 @@ const Chat = (props) => {
 
                                                 {/* messages */}
                                                 <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
+                                                    
                                                     {
                                                         data.map((val) => (
                                                             <div className="read-panel">
@@ -463,9 +464,9 @@ const Chat = (props) => {
                                                             </div>
                                                         ))
                                                     }
-                                                    <div ref={messagesEndRef} />
+                                                    
                                                 </div>
-
+                                                <div ref={messagesEndRef} />
                                                 {/* send message */}
                                                 <div className="read-panel">
                                                     <div className="media">
