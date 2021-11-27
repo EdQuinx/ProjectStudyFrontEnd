@@ -1,5 +1,5 @@
 import { Spin, List, Avatar, Space, Button, Modal, message, Form, Radio, Select, Input, Upload, Image } from 'antd';
-import { UploadOutlined, MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons'
+import { UploadOutlined } from '@ant-design/icons'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';

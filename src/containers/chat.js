@@ -115,7 +115,7 @@ const Chat = (props) => {
             handleGetAllChat()
             handlGetTestList()
         }
-    }, [imin]);
+    }, [imin, location]);
 
     const handleGetAllChat = () => {
         axios.get(api.api_chat, {
@@ -127,14 +127,12 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                //console.log(res)
                 res.reverse()
                 setData(res)
                 scrollToBottom();
             })
             .catch(console.log)
     }
-
 
     useEffect(() => {
         if (!socket) return;
@@ -235,6 +233,7 @@ const Chat = (props) => {
     const [picktest] = Form.useForm()
 
     const handlGetTestList = () => {
+        setTestlist([])
         axios.get(api.api_group_test_all, {
             params: {
                 username: props.username,

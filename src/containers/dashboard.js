@@ -72,7 +72,7 @@ const DashBoard = (props) => {
     const showGroupInfo = () => {
 
         return (
-            <Spin spinning={groupInfo===null}>
+            <Spin spinning={groupInfo === null}>
                 <div>
                     <p>Số member: {groupInfo?.memberIds.length}</p>
                     <p>Môn học tốt: {groupInfo?.hasSubjects.join(", ")}</p>
@@ -83,8 +83,7 @@ const DashBoard = (props) => {
     }
 
     const handleGetGroupById = (e, id) => {
-        if (e)
-        {
+        if (e) {
             console.log("groupid: ", id)
             axios.get(api.api_group_user, {
                 params: {
@@ -93,11 +92,11 @@ const DashBoard = (props) => {
                     groupId: id
                 }
             }).then(res => res.data)
-            .then(res => {
-                console.log("get gr: ", res)
-                setGroupInfo(res)
-            })
-            .catch(console.log)
+                .then(res => {
+                    console.log("get gr: ", res)
+                    setGroupInfo(res)
+                })
+                .catch(console.log)
         } else {
             setGroupInfo(null)
         }
@@ -215,19 +214,20 @@ const DashBoard = (props) => {
                     subject: val
                 }
             })
-            .then(res => res.data)
-            .then(res => {
-                if(res.length > 0)
-                {
-                    setDataResult(old => [...old, {
-                        "subject" : val,
-                        "points" : res.map(val => val.point).slice(-10)
-                    }])
-                }
-            })
-            .catch(console.log)
+                .then(res => res.data)
+                .then(res => {
+                    if (res.length > 0) {
+                        setDataResult(old => [...old, {
+                            "subject": val,
+                            "points": res.map(val => val.point).slice(-10)
+                        }])
+                    }
+                })
+                .catch(console.log)
         })
     }
+
+    const label_result = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10']
 
     return (
         <React.Fragment>
@@ -278,7 +278,7 @@ const DashBoard = (props) => {
                                     <div className="col-sm-9 col-lg-10">
 
                                         <div className="panel panel-default">
-                                            <div className="panel-body">
+                                            <div className="panel-body" >
                                                 <Modal visible={ocreateGr} title="Tạo nhóm mới"
                                                     onCancel={() => setOcreateGr(false)}
                                                     cancelText="Cancel"
@@ -352,7 +352,6 @@ const DashBoard = (props) => {
                                                         </Form.Item>
                                                     </Form>
                                                 </Modal>
-
                                                 <Row gutter={16}>
                                                     <Col className="gutter-row" span={8}>
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />} onClick={() => setOcreateGr(true)} >Tạo nhóm mới</Button>
@@ -364,15 +363,16 @@ const DashBoard = (props) => {
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<UsergroupAddOutlined />} onClick={() => setOfindFr(true)} >Tìm bạn bè</Button>
                                                     </Col>
                                                 </Row>
-                                                <div className="mb30"></div>
-                                                {
-                                                    groupsRes.length > 0 ?
+                                            </div>
+                                        </div>
+                                        {
+                                            groupsRes.length > 0 ?
+                                                <div className="panel panel-default">
+                                                    <div className="panel-body">
                                                         <List
                                                             itemLayout="horizontal"
                                                             dataSource={groupsRes}
                                                             renderItem={item => (
-
-                                                                
                                                                 <List.Item>
                                                                     <List.Item.Meta
                                                                         avatar={<Avatar icon={<CommentOutlined />} />}
@@ -381,15 +381,19 @@ const DashBoard = (props) => {
                                                                         }
                                                                     />
                                                                     <Popover onVisibleChange={(e) => handleGetGroupById(e, item.groupId)} content={showGroupInfo} title={"Thông tin nhóm: " + item.groupName}>
-                                                                        <EyeOutlined style={{ width: "50px" }}/>
-                                                                    </Popover>                                               
+                                                                        <EyeOutlined style={{ width: "50px" }} />
+                                                                    </Popover>
                                                                     <Button type="primary" onClick={() => handleRequestJoinGroup(item.groupId, item.groupName)}>Xin vào</Button>
                                                                 </List.Item>
 
                                                             )}
                                                         />
-                                                        :
-                                                        friendRes.length > 0 ?
+                                                    </div>
+                                                </div>
+                                                :
+                                                friendRes.length > 0 ?
+                                                    <div className="panel panel-default">
+                                                        <div className="panel-body">
                                                             <List
                                                                 itemLayout="horizontal"
                                                                 dataSource={friendRes}
@@ -403,18 +407,21 @@ const DashBoard = (props) => {
                                                                     </List.Item>
                                                                 )}
                                                             />
-                                                            :
-                                                            <Row gutter={[16, 16]}>
-                                                                {
-                                                                    dataResult.map((val, index) => (
-                                                                        <Col className="gutter-row" span={24} key={`result-${index}`}>
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    <Row gutter={[16, 16]}>
+                                                        {
+                                                            dataResult.map((val, index) => (
+                                                                <Col className="gutter-row" span={24} key={`result-${index}`}>
+                                                                    <div className="panel panel-default">
+                                                                        <div className="panel-body">
                                                                             <Descriptions title={val.subject} bordered>
-                                                                                <Descriptions.Item label="Kết quả gần đây">9 điểm</Descriptions.Item>
-                                                                                <Descriptions.Item label="Thời gian làm bài" span={2}>20 phút</Descriptions.Item>
+                                                                                <Descriptions.Item label="Kết quả gần đây" span={3}>{val.points.slice(-1)[0]} điểm</Descriptions.Item>
                                                                                 <Descriptions.Item label="Biểu đồ kết quả" span={3}>
                                                                                     <Bar
                                                                                         data={{
-                                                                                            labels: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10'],
+                                                                                            labels: label_result.slice(0, val.points.length),
                                                                                             datasets: [
                                                                                                 {
                                                                                                     label: 'Điểm',
@@ -430,14 +437,14 @@ const DashBoard = (props) => {
                                                                                     />
                                                                                 </Descriptions.Item>
                                                                             </Descriptions>
-                                                                        </Col>
-                                                                    ))
-                                                                }
-                                                            </Row>
-                                                }
+                                                                        </div>
+                                                                    </div>
+                                                                </Col>
 
-                                            </div>
-                                        </div>
+                                                            ))
+                                                        }
+                                                    </Row>
+                                        }
 
                                     </div>
                                 </div>

@@ -4,6 +4,7 @@ import SignIn from "./containers/signin";
 import SignUp from "./containers/signup";
 import DashBoard from "./containers/dashboard";
 import Profile from "./containers/profile";
+import Settings from "./containers/settings";
 import Chat from "./containers/chat";
 import ChatTest from "./containers/chat-test";
 import Tests from "./containers/tests";
@@ -17,6 +18,7 @@ const BaseRouter = () => (
     <Switch>
         <Route exact path="/" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
+        <Route exact path="/settings" component={Settings} />
         <Route exact path="/chat" component={Chat} />
         <Route exact path="/chat/:groupid" component={Chat} />
         <Route exact path="/chat-test/:groupid" component={ChatTest} />
