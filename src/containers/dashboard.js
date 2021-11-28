@@ -403,7 +403,7 @@ const DashBoard = (props) => {
                                                                             avatar={<Avatar icon={<UsergroupAddOutlined />} />}
                                                                             title={<b>{item.fullname}</b>} description={item.username}
                                                                         />
-                                                                        <Button type="primary">Xem thêm</Button>
+                                                                        <Button href={`/user/${item.username}`} type="primary">Xem thêm</Button>
                                                                     </List.Item>
                                                                 )}
                                                             />

@@ -12,12 +12,14 @@ import EditTest from "./containers/edittest";
 import GroupTest from "./containers/grouptest"
 import SystemTest from "./containers/systemtest"
 import AddSysQuest from "./containers/addsysquest"
+import UserProfile from "./containers/user"
 
 
 const BaseRouter = () => (
     <Switch>
         <Route exact path="/" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
+        <Route exact path="/user/:username" component={UserProfile} />
         <Route exact path="/settings" component={Settings} />
         <Route exact path="/chat" component={Chat} />
         <Route exact path="/chat/:groupid" component={Chat} />

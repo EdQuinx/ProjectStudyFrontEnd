@@ -11,6 +11,7 @@ export const api_signup = `${auth_service}/register`
 
 export const user_service = "http://103.90.229.216:30106"
 export const api_user_info = `${user_service}/users/info`
+export const api_view_user = `${user_service}/view/user`
 export const api_user_status = `${user_service}/users/status`
 export const api_user_add_gudsub = `${user_service}/add/good/subject`
 export const api_user_add_badsub = `${user_service}/add/bad/subject`
