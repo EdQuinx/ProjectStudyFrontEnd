@@ -9,7 +9,13 @@ import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 import { useAppContext } from '../state';
 import { Link, useLocation } from 'react-router-dom'
+import ReactScrollableFeed from 'react-scrollable-feed'
 import io from "socket.io-client";
+
+//time
+import TimeAgo from 'react-timeago'
+import viStrings from 'react-timeago/lib/language-strings/vi'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 
 
 const { TextArea } = Input;
@@ -27,7 +33,9 @@ const ChatTest = (props) => {
 
     const [current, setCurrent] = useState(null)
 
+    const [keyCount, setKeyCount] = useState(0)
     const [groupInfo, setGroupInfo] = useState(null)
+    const formatter = buildFormatter(viStrings)
 
     const location = useLocation()
 
@@ -108,7 +116,6 @@ const ChatTest = (props) => {
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
-
     useEffect(() => {
         if (imin) {
             setSocket(io(api.socket_chat))
@@ -129,10 +136,11 @@ const ChatTest = (props) => {
             .then(res => {
                 res.reverse()
                 setData(res)
-                scrollToBottom();
+                //scrollToBottom();
             })
             .catch(console.log)
     }
+    const messageEl = useRef(null);
 
     useEffect(() => {
         if (!socket) return;
@@ -154,9 +162,14 @@ const ChatTest = (props) => {
 
         socket.on('outputChatMessage', (data1) => {
             setData(oldArray => [...oldArray, data1])
-            scrollToBottom()
+            //scrollToBottom()
         });
-
+        if (messageEl) {
+            messageEl.current.addEventListener('DOMNodeInserted', event => {
+              const { currentTarget: target } = event;
+              target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+            });
+          }
 
     }, [socket]);
 
@@ -164,6 +177,11 @@ const ChatTest = (props) => {
 
     const handleSendMsg = () => {
         if (socketConnected == 2) {
+            var removed_new_line = messag.replace(/\n/g, " ");
+            if (removed_new_line.trim()){
+                console.log("blank msg")
+                return
+            }
             socket.emit('inputChatMessage', {
                 groupId: props.match.params.groupid,
                 sender: props.username,
@@ -412,7 +430,7 @@ const ChatTest = (props) => {
                                                     </div>
 
                                                     <div className="chat-body">
-                                                        <div style={{ height: "48vh", overflowY: "auto" }} id="msges">
+                                                        <div style={{ height: "48vh", overflowY: "auto" }} id="msges" ref={messageEl}>
                                                             {
                                                                 data.map((val) => (
                                                                     <div className={JSON.parse(val.sender).username === props.username ? "answer right" : "answer left"}>
@@ -424,7 +442,7 @@ const ChatTest = (props) => {
                                                                             {/* <div className="status online"></div> */}
                                                                         </div>
                                                                         <div className="name">{JSON.parse(val.sender).fullname}</div>
-                                                                        <div className="text" onLoad={scrollToBottom} style={{ lineBreak: "anywhere" }}>
+                                                                        <h4 className="text" style={{ lineBreak: "anywhere" }}>
                                                                             {
                                                                                 val.type === "image" ?
                                                                                     <Image src={val.message} width="200px" />
@@ -435,21 +453,24 @@ const ChatTest = (props) => {
                                                                                         </Typography.Link>
                                                                                         :
                                                                                         val.type === "video" ?
-                                                                                            <video width="400" controls onLoad={scrollToBottom}>
+                                                                                            <video width="400" controls>
                                                                                                 <source src={val.message} />
                                                                                             </video>
                                                                                             :
                                                                                             val.message
                                                                             }
-                                                                        </div>
-                                                                        <div className="time">{val.time.slice(0,24)}</div>
+                                                                        </h4>
+                                                                        <div className="time">
+                                                                        {
+                                                                            <TimeAgo date={val.time} formatter={formatter} />
+                                                                        //val.time.slice(0,24)
+                                                                        }</div>
                                                                     </div>
                                                                 ))
                                                             }
-                                                            <div ref={messagesEndRef} />
+                                                            
                                                         </div>
                                                     </div>
-
                                                     {/* send message */}
                                                     <div className="read-panel">
                                                         <div className="media">
@@ -457,9 +478,21 @@ const ChatTest = (props) => {
                                                                 <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
                                                             </a>
                                                             <div className="media-body">
-                                                                <Input.TextArea value={messag} rows={2} onChange={(e) => setMessag(e.target.value)} onKeyUp={(e) => {
-                                                                    if (e.key == "Enter") {
+                                                                <Input.TextArea 
+                                                                value={messag} 
+                                                                rows={2} 
+                                                                onChange={(e) => setMessag(e.target.value)} 
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key == "Shift") {
+                                                                        setKeyCount(keyCount++)
+                                                                    }
+                                                                }} 
+                                                                onKeyUp={(e) => {
+                                                                    if (e.key == "Enter" && keyCount == 0) {
                                                                         handleSendMsg()
+                                                                    }
+                                                                    else {
+                                                                        setKeyCount(0)
                                                                     }
                                                                 }} />
                                                                 <Divider />
