@@ -22,8 +22,8 @@ const BaseRouter = () => (
         <Route exact path="/user/:username" component={UserProfile} />
         <Route exact path="/settings" component={Settings} />
         <Route exact path="/chat" component={Chat} />
-        <Route exact path="/chat/:groupid" component={Chat} />
-        <Route exact path="/chat-test/:groupid" component={ChatTest} />
+        <Route exact path="/chat-old/:groupid" component={Chat} />
+        <Route exact path="/chat/:groupid" component={ChatTest} />
         <Route exact path="/add-sys-quest" component={AddSysQuest} />
         <Route exact path="/chat/:groupid/tests" component={Tests} />
         <Route exact path="/chat/:groupid/tests/edit/:testid" component={EditTest} />
