@@ -460,7 +460,7 @@ const ChatTest = (props) => {
                                                                                             val.message
                                                                             }
                                                                         </h4>
-                                                                        <div className="time">
+                                                                        <div className="time" style={{fontSize: "10px"}}>
                                                                         {
                                                                             <TimeAgo date={val.time} formatter={formatter} />
                                                                         //val.time.slice(0,24)
