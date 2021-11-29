@@ -9,7 +9,6 @@ import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 import { useAppContext } from '../state';
 import { Link, useLocation } from 'react-router-dom'
-import ReactScrollableFeed from 'react-scrollable-feed'
 import io from "socket.io-client";
 
 //time
@@ -61,7 +60,7 @@ const ChatTest = (props) => {
             setImin(true)
         }
         setCurrent(ingroups.find(data => data._id === props.match.params.groupid))
-        console.log("cureetn: ",ingroups.find(data => data._id === props.match.params.groupid))
+        console.log("cureetn: ", ingroups.find(data => data._id === props.match.params.groupid))
     }, [ingroups, props.match.params.groupid])
 
     const handlegetGroupInfo = () => {
@@ -72,10 +71,10 @@ const ChatTest = (props) => {
                 groupId: props.match.params.groupid
             }
         }).then(res => res.data)
-        .then(res => {
-            setGroupInfo(res)
-        })
-        .catch(console.log)
+            .then(res => {
+                setGroupInfo(res)
+            })
+            .catch(console.log)
     }
 
     const handlDeleteGroup = () => {
@@ -166,10 +165,10 @@ const ChatTest = (props) => {
         });
         if (messageEl) {
             messageEl.current.addEventListener('DOMNodeInserted', event => {
-              const { currentTarget: target } = event;
-              target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+                const { currentTarget: target } = event;
+                target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
             });
-          }
+        }
 
     }, [socket]);
 
@@ -177,20 +176,19 @@ const ChatTest = (props) => {
 
     const handleSendMsg = () => {
         if (socketConnected == 2) {
-            var removed_new_line = messag.replace(/\n/g, " ");
-            if (removed_new_line.trim()){
+            var removed_new_line = messag.replace(/[\n\r]/g, '').replace(" ", "").length
+            if (removed_new_line === 0) {
                 console.log("blank msg")
-                return
+            } else {
+                socket.emit('inputChatMessage', {
+                    groupId: props.match.params.groupid,
+                    sender: props.username,
+                    message: messag,
+                    type: "text",
+                    time: new Date().toString()
+                })
             }
-            socket.emit('inputChatMessage', {
-                groupId: props.match.params.groupid,
-                sender: props.username,
-                message: messag,
-                type: "text",
-                time: new Date().toString()
-            })
             setMessag("")
-            // console.log(msgfiles)
             msgfiles.map(e => {
                 socket.emit('inputChatMessage', {
                     groupId: props.match.params.groupid,
@@ -217,14 +215,13 @@ const ChatTest = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                if (res?.success)
-                {
+                if (res?.success) {
                     message.success("Duyệt vào nhóm thành công")
                 }
             }).catch(console.log)
     }
 
-    const handleDenyToGroup = (uid) => { 
+    const handleDenyToGroup = (uid) => {
         axios.patch(api.api_group_deny, {
             groupId: props.match.params.groupid,
             username: uid,
@@ -236,8 +233,7 @@ const ChatTest = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                if (res?.success)
-                {
+                if (res?.success) {
                     message.success("Đã từ chối nhóm")
                 }
             }).catch(console.log)
@@ -267,8 +263,7 @@ const ChatTest = (props) => {
     }
 
     const handleSetTargetTest = (username) => {
-        if (showChooseTest === username)
-        {
+        if (showChooseTest === username) {
             setShowChooseTest("")
         } else {
             setShowChooseTest(username)
@@ -277,8 +272,8 @@ const ChatTest = (props) => {
 
     const handleSendTestRequest = (e) => {
         const sdata = {
-            groupId: props.match.params.groupid, 
-            username: showChooseTest, 
+            groupId: props.match.params.groupid,
+            username: showChooseTest,
             testId: e.testId,
             createAt: new Date().toString(),
         }
@@ -460,15 +455,15 @@ const ChatTest = (props) => {
                                                                                             val.message
                                                                             }
                                                                         </h4>
-                                                                        <div className="time" style={{fontSize: "10px"}}>
-                                                                        {
-                                                                            <TimeAgo date={val.time} formatter={formatter} />
-                                                                        //val.time.slice(0,24)
-                                                                        }</div>
+                                                                        <div className="time" style={{ fontSize: "10px" }}>
+                                                                            {
+                                                                                <TimeAgo date={val.time} formatter={formatter} />
+                                                                                //val.time.slice(0,24)
+                                                                            }</div>
                                                                     </div>
                                                                 ))
                                                             }
-                                                            
+
                                                         </div>
                                                     </div>
                                                     {/* send message */}
@@ -478,23 +473,18 @@ const ChatTest = (props) => {
                                                                 <Avatar size={26} icon={<UserOutlined />} style={{ marginRight: "5px" }} />
                                                             </a>
                                                             <div className="media-body">
-                                                                <Input.TextArea 
-                                                                value={messag} 
-                                                                rows={2} 
-                                                                onChange={(e) => setMessag(e.target.value)} 
-                                                                onKeyDown={(e) => {
-                                                                    if (e.key == "Shift") {
-                                                                        setKeyCount(keyCount++)
-                                                                    }
-                                                                }} 
-                                                                onKeyUp={(e) => {
-                                                                    if (e.key == "Enter" && keyCount == 0) {
-                                                                        handleSendMsg()
-                                                                    }
-                                                                    else {
-                                                                        setKeyCount(0)
-                                                                    }
-                                                                }} />
+                                                                <Input.TextArea
+                                                                    value={messag}
+                                                                    rows={2}
+                                                                    onChange={(e) => setMessag(e.target.value)}
+                                                                    onKeyUp={(e) => {
+                                                                        if (e.key === "Enter" && e.shiftKey) {
+                                                                            return;
+                                                                        }
+                                                                        if (e.key === "Enter") {
+                                                                            handleSendMsg()
+                                                                        }
+                                                                    }} />
                                                                 <Divider />
                                                                 <Button className="mr5" type="primary" onClick={handleSendMsg}>Gửi</Button>
 
