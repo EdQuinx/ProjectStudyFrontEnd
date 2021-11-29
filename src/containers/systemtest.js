@@ -33,7 +33,6 @@ const SystemTest = (props) => {
     }, [])
 
     const renderer = ({ hours, minutes, seconds, completed }) => {
-        console.log(hours, minutes, seconds, completed, nopbai)
         if (completed) {
             if (!nopbai) {
                 handleGetResult()
@@ -181,7 +180,6 @@ const SystemTest = (props) => {
             .then(res => {
                 setNopbai(false)
                 setCdtime(Date.now() + res.time * 60000 + 5000)
-                console.log(res)
                 setTestlist(res.questionList)
                 const test_data = []
                 res.questionList.map(val => {
@@ -191,7 +189,6 @@ const SystemTest = (props) => {
                     })
                 })
                 setAnswer(test_data)
-                
                 setIsload(false)
             })
             .catch(e => {
