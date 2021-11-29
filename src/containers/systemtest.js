@@ -27,6 +27,8 @@ const SystemTest = (props) => {
     const [classs, setClasss] = useState(10)
     const [timee, setTimee] = useState(20)
 
+    const [otestForm] = Form.useForm()
+
     useEffect(() => {
         handleCheckOldTest()
 
@@ -71,8 +73,26 @@ const SystemTest = (props) => {
 
     }
 
+    const handleDeleteOldTest = () => {
+        oldTest.map(val => {
+            axios.delete(api.api_history_oldtest,
+                {
+                    params: {
+                        username: props.username,
+                        token: props.token,
+                        testId: val._id,
+                    }
+                }
+            ).then(res => {
+                handleCheckOldTest()
+            }).catch(console.log)
+        })
+        
+    }
+
     const handleCheckOldTest = () => {
         setIsload(true)
+        setOldTest([])
         axios.get(api.api_history_oldtest, {
             params: {
                 username: props.username,
@@ -82,7 +102,6 @@ const SystemTest = (props) => {
             .then(res => {
                 setIsload(false)
                 setOldTest(res)
-                console.log("oldtest", res)
             })
             .catch(console.log)
     }
@@ -216,8 +235,10 @@ const SystemTest = (props) => {
                                                     <Typography.Title level={3}>Bài kiểm tra đang làm giở</Typography.Title>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <Form onFinish={handleContinueOldTest}>
-                                                        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} name="subject" label="Bài thi đang giở" rules={[{ required: true, message: 'Chọn bài thi' }]} >
+                                                    <Form form={otestForm}
+                                                        onFinish={handleContinueOldTest}
+                                                    >
+                                                        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}  name="subject" label="Bài thi đang giở" rules={[{ required: true, message: 'Chọn bài thi' }]} >
                                                             <Select>
                                                                 {
                                                                     oldTest.map(val => (
@@ -230,10 +251,8 @@ const SystemTest = (props) => {
                                                             <Row>
                                                                 <Col span={8}><Button type="primary" htmlType="submit">Tiếp tục</Button></Col>
                                                                 <Col span={8}><Button type="primary" onClick={handleCheckOldTest}>Tải lại</Button></Col>
-                                                                <Col span={8}><Button type="primary" htmlType="submit">Xoá</Button></Col>
+                                                                <Col span={8}><Button type="primary" onClick={handleDeleteOldTest}>Xoá hết</Button></Col>
                                                             </Row>
-
-
                                                         </Form.Item>
                                                     </Form>
                                                 </div>

@@ -216,6 +216,7 @@ const DashBoard = (props) => {
             })
                 .then(res => res.data)
                 .then(res => {
+                    if (!Array.isArray(res)) return
                     if (res.length > 0) {
                         setDataResult(old => [...old, {
                             "subject": val,
