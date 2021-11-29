@@ -316,7 +316,7 @@ const DashBoard = (props) => {
                                                         <Form.Item name="search" label="Tên nhóm" rules={[{ required: true, message: 'Nhập tên nhóm' }]}>
                                                             <Input placeholder="Nhập tên nhóm" />
                                                         </Form.Item>
-                                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]} >
+                                                        <Form.Item name="class" label="Lớp">
                                                             <Select>
                                                                 {
                                                                     api.classes.map((val) => (

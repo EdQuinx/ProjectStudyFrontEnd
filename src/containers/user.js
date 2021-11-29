@@ -57,7 +57,7 @@ const UserProfile = (props) => {
                 }
             }).then(res => res.data)
                 .then(res => {
-                    console.log(res)
+                    if(res === null) return
                     setGroupsres(old => [...old, res])
                 })
                 .catch(console.log)
@@ -70,7 +70,7 @@ const UserProfile = (props) => {
         return (
             <Spin spinning={groupInfo === null}>
                 <div>
-                    <p>Số member: {groupInfo?.memberIds.length}</p>
+                    <p>Số thành viên: {groupInfo?.memberIds.length}</p>
                     <p>Môn học tốt: {groupInfo?.hasSubjects.join(", ")}</p>
                     <p>Môn học yếu: {groupInfo?.requiredSubjects.join(", ")}</p>
                 </div>
