@@ -298,7 +298,7 @@ const DashBoard = (props) => {
                                                                         <Select.Option value={val}>Lớp {val}</Select.Option>
                                                                     ))
                                                                 }
-                                                                <Select.Option value="all">All</Select.Option>
+                                                                {/* <Select.Option value="all">All</Select.Option> */}
                                                             </Select>
                                                         </Form.Item>
                                                     </Form>
@@ -316,17 +316,16 @@ const DashBoard = (props) => {
                                                         <Form.Item name="search" label="Tên nhóm" rules={[{ required: true, message: 'Nhập tên nhóm' }]}>
                                                             <Input placeholder="Nhập tên nhóm" />
                                                         </Form.Item>
-                                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]} initialValue="all">
+                                                        <Form.Item name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]} >
                                                             <Select>
                                                                 {
                                                                     api.classes.map((val) => (
                                                                         <Select.Option value={val}>Lớp {val}</Select.Option>
                                                                     ))
                                                                 }
-                                                                <Select.Option value="all">All</Select.Option>
                                                             </Select>
                                                         </Form.Item>
-                                                        <Form.Item name="hasSubject" label="Môn học">
+                                                        {/* <Form.Item name="hasSubject" label="Môn học">
                                                             <Select>
                                                                 {
                                                                     api.list_sub.map((val) => (
@@ -334,7 +333,7 @@ const DashBoard = (props) => {
                                                                     ))
                                                                 }
                                                             </Select>
-                                                        </Form.Item>
+                                                        </Form.Item> */}
                                                     </Form>
                                                 </Modal>
 
@@ -397,15 +396,29 @@ const DashBoard = (props) => {
                                                             <List
                                                                 itemLayout="horizontal"
                                                                 dataSource={friendRes}
-                                                                renderItem={item => (
-                                                                    <List.Item>
-                                                                        <List.Item.Meta
-                                                                            avatar={<Avatar icon={<UsergroupAddOutlined />} />}
-                                                                            title={<b>{item.fullname}</b>} description={item.username}
-                                                                        />
-                                                                        <Button href={`/user/${item.username}`} type="primary">Xem thêm</Button>
-                                                                    </List.Item>
-                                                                )}
+                                                                renderItem={item => {
+                                                                    if (Array.isArray(item)) {
+                                                                        return item.map((val, index) => (
+                                                                            <List.Item>
+                                                                                <List.Item.Meta
+                                                                                    avatar={<Avatar icon={<UsergroupAddOutlined />} />}
+                                                                                    title={<b>{val.fullname}</b>} description={val.username}
+                                                                                />
+                                                                                <Button href={`/user/${val.username}`} type="primary">Xem thêm</Button>
+                                                                            </List.Item>
+                                                                        ))
+                                                                    } else {
+                                                                        return (
+                                                                            <List.Item>
+                                                                                <List.Item.Meta
+                                                                                    avatar={<Avatar icon={<UsergroupAddOutlined />} />}
+                                                                                    title={<b>{item.fullname}</b>} description={item.username}
+                                                                                />
+                                                                                <Button href={`/user/${item.username}`} type="primary">Xem thêm</Button>
+                                                                            </List.Item>
+                                                                        )
+                                                                    }
+                                                                }}
                                                             />
                                                         </div>
                                                     </div>

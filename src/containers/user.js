@@ -18,20 +18,19 @@ const UserProfile = (props) => {
         email: "edquinx2@gmail.com"
     }
     const [userinfo, setUserinfo] = useState([])
+
     const [groupsRes, setGroupsres] = useState([])
+
     const [groupInfo, setGroupInfo] = useState(null)
+
     const [formA] = Form.useForm()
 
     const [gudbad, setGudbad] = useState(true)
-    const [repeat, setRepeat] = useState(false)
+
+
     useEffect(() => {
-        if (!repeat) {
-            handleGetUserInfo()
-            setRepeat(true)
-        } else {
-            handleGetAllGroups()
-        }
-    }, [userinfo])
+        handleGetUserInfo()
+    }, [])
 
 
     const handleGetUserInfo = () => {
@@ -41,14 +40,31 @@ const UserProfile = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
-                console.log("check pro5", props.change)
                 setUserinfo(res)
-            }).then(res => {
-                handleGetAllGroups(res)
+                handleGetAllGroups(res.inGroups)
             })
             .catch(console.log)
-
     }
+
+    const handleGetAllGroups = (ids) => {
+        setGroupsres([])
+        ids.map(val => {
+            axios.get(api.api_group_user, {
+                params: {
+                    username: props.username,
+                    token: props.token,
+                    groupId: val
+                }
+            }).then(res => res.data)
+                .then(res => {
+                    console.log(res)
+                    setGroupsres(old => [...old, res])
+                })
+                .catch(console.log)
+        })
+    }
+
+
     const showGroupInfo = () => {
 
         return (
@@ -62,45 +78,15 @@ const UserProfile = (props) => {
         )
     }
 
-    const handleGetAllGroups = (e) => {
-        const cloneGroups = groupsRes
-        console.log("groups user: ", e)
-        /*for (var i = 0; i < e.inGroups.length; i++) {
-            axios.get(api.api_group_user, {
-                params: {
-                    username: props.username,
-                    token: props.token,
-                    groupId: e.inGroups[i]
-                }
-            }).then(res => res.data)
-                .then(res => {
-                    console.log("get gr: ", res)
-                    cloneGroups[e.inGroups[i]] = res
-                    setGroupsres(cloneGroups)
-                })
-                .catch(console.log)
-        
-        }*/
-    }
     const handleGetGroupById = (e, id) => {
         if (e) {
-            axios.get(api.api_group_user, {
-                params: {
-                    username: props.username,
-                    token: props.token,
-                    groupId: id
-                }
-            }).then(res => res.data)
-                .then(res => {
-                    console.log("get gr: ", res)
-                    setGroupInfo(res)
-                    formA.resetFields()
-                })
-                .catch(console.log)
+            const getinfo = groupsRes.find(val => val._id === id)
+            setGroupInfo(getinfo)
         } else {
             setGroupInfo(null)
         }
     }
+
     return (
         <React.Fragment>
             {
@@ -194,20 +180,19 @@ const UserProfile = (props) => {
 
                                                     <List
                                                         itemLayout="horizontal"
-                                                        dataSource={userinfo?.inGroups}
+                                                        dataSource={groupsRes}
                                                         renderItem={item => (
                                                             <List.Item>
                                                                 <List.Item.Meta
                                                                     avatar={<Avatar icon={<CommentOutlined />} />}
                                                                     title={
-                                                                        <b>{groupsRes[item]?.name}</b>
+                                                                        <b>{item.name}</b>
                                                                     }
                                                                 />
-                                                                <Popover onVisibleChange={(e) => handleGetGroupById(e, item)} content={showGroupInfo} title={"Thông tin nhóm: " + groupsRes[item]?.name}>
+                                                                <Popover onVisibleChange={(e) => handleGetGroupById(e, item._id)} content={showGroupInfo} title={"Thông tin nhóm: " + item.name}>
                                                                     <EyeOutlined style={{ width: "50px" }} />
                                                                 </Popover>
                                                             </List.Item>
-
                                                         )}
                                                     />
                                                 </div>
