@@ -104,6 +104,8 @@ const DashBoard = (props) => {
 
     const handleFindGroup = (e) => {
         setFinding(true)
+        setGroupsres([])
+        setFriendres([])
         axios.get(api.api_search_group, {
             params: {
                 username: props.username,
@@ -135,6 +137,8 @@ const DashBoard = (props) => {
 
     const handleFindFriend = (e) => {
         setFinding(true)
+        setGroupsres([])
+        setFriendres([])
         axios.get(api.api_search_users, {
             params: {
                 username: props.username,

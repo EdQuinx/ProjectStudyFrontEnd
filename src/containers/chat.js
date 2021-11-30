@@ -127,6 +127,7 @@ const Chat = (props) => {
             }
         }).then(res => res.data)
             .then(res => {
+                console.log(res)
                 res.reverse()
                 setData(res)
                 scrollToBottom();
@@ -441,7 +442,7 @@ const Chat = (props) => {
                                                                     </a>
                                                                     <div className="media-body">
                                                                         <span className="media-meta pull-right">{val.time}</span>
-                                                                        <h4 className="text-primary">{JSON.parse(val.sender).fullname}</h4>
+                                                                        <h4 className="text-primary"><Link to={`/user/${val.sender}`}>{JSON.parse(val.sender).fullname}</Link></h4>
                                                                     </div>
                                                                 </div>
 
