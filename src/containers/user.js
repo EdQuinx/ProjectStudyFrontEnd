@@ -97,6 +97,9 @@ const UserProfile = (props) => {
                     <Spin size='large' />
                     :
                     props.isAuthenticated ?
+                    props.username === userinfo?.username ?
+                    props.history.push("/profile")
+                    :
                         <React.Fragment>
                             <PageHeader icon="fa-user" page="Thông tin cá nhân" />
                             <div className="contentpanel">

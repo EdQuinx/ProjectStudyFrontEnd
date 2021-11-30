@@ -436,7 +436,7 @@ const ChatTest = (props) => {
                                                                                 JSON.parse(val.sender).avatar} alt="User name"></img>
                                                                             {/* <div className="status online"></div> */}
                                                                         </div>
-                                                                        <div className="name">{JSON.parse(val.sender).fullname}</div>
+                                                                        <div className="name"><Link to={`/user/${JSON.parse(val.sender).username}`}>{JSON.parse(val.sender).fullname}</Link></div>
                                                                         <h4 className="text" style={{ lineBreak: "anywhere" }}>
                                                                             {
                                                                                 val.type === "image" ?
