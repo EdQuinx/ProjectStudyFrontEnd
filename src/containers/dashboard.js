@@ -35,6 +35,10 @@ const DashBoard = (props) => {
 
     const [finding, setFinding] = useState(false)
 
+    const namesArray = friendRes.map(elem => elem.username);
+    const namesTraversed = [];
+    let currentCountOfName = 1;
+    let len = 0;
     const handleCreateGroup = (e) => {
         setFinding(true)
         axios.post(api.api_group_user,
@@ -399,8 +403,11 @@ const DashBoard = (props) => {
                                                     <div className="panel panel-default">
                                                         <div className="panel-body">
                                                             <List
+                                                            
                                                                 itemLayout="horizontal"
-                                                                dataSource={friendRes}
+                                                                dataSource={Array.from(new Set(friendRes.map(a => a.username))).map(username => {
+                                                                    return friendRes.find(a => a.username === username)
+                                                                })}
                                                                 renderItem={item => {
                                                                     if (Array.isArray(item)) {
                                                                         return item.map((val, index) => (
