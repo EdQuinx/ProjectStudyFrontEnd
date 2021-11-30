@@ -61,6 +61,7 @@ const mapStateToProps = state => {
         loading: state.loading,
         error: state.error,
         change: state.change,
+        verifyemail: state.verifyemail,
     }
 }
 

@@ -8,7 +8,8 @@ const initialState = {
     userId: "",
     change: 0, 
     loading: false,
-    info: null
+    info: null,
+    verifyemail: false
 }
 
 const authStart = (state, action) => {
