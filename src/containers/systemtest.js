@@ -267,7 +267,7 @@ const SystemTest = (props) => {
                                                     </div>
                                                     <div class="modal-body">
                                                         <Form form={testinfoForm} onFinish={handleCreateTest}>
-                                                            <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]}>
+                                                            {/* <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} name="class" label="Lớp" rules={[{ required: true, message: 'Chọn khối, lớp' }]}>
                                                                 <Select>
                                                                     {
                                                                         api.classes.map((val) => (
@@ -275,7 +275,7 @@ const SystemTest = (props) => {
                                                                         ))
                                                                     }
                                                                 </Select>
-                                                            </Form.Item>
+                                                            </Form.Item> */}
                                                             <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} name="subject" label="Môn học" rules={[{ required: true, message: 'Chọn môn học' }]}>
                                                                 <Select>
                                                                     {

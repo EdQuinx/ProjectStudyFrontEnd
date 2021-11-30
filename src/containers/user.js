@@ -1,4 +1,4 @@
-import { Spin, List, Button, Modal, message, Form, Radio, Select, Popover, Avatar } from 'antd';
+import { Spin, List, Button, Modal, message, Form, Radio, Select, Popover, Avatar, Table } from 'antd';
 import { AppstoreAddOutlined, FileSearchOutlined, UsergroupAddOutlined, CommentOutlined, EyeOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -27,6 +27,8 @@ const UserProfile = (props) => {
 
     const [gudbad, setGudbad] = useState(true)
 
+    const [pointList, setPointList] = useState([])
+
 
     useEffect(() => {
         handleGetUserInfo()
@@ -41,6 +43,7 @@ const UserProfile = (props) => {
         }).then(res => res.data)
             .then(res => {
                 setUserinfo(res)
+                setPointList(res.historySubject)
                 handleGetAllGroups(res.inGroups)
             })
             .catch(console.log)
@@ -57,7 +60,7 @@ const UserProfile = (props) => {
                 }
             }).then(res => res.data)
                 .then(res => {
-                    if(res === null) return
+                    if (res === null) return
                     setGroupsres(old => [...old, res])
                 })
                 .catch(console.log)
@@ -195,6 +198,33 @@ const UserProfile = (props) => {
                                                             </List.Item>
                                                         )}
                                                     />
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <ul className="nav nav-tabs nav-justified nav-profile">
+                                            <li className="active">
+                                                <a><strong>Điểm kiểm tra gần đây</strong></a>
+                                            </li>
+                                        </ul>
+
+
+                                        <div className="tab-content">
+                                            <div className="tab-pane active" id="activities">
+                                                <div className="activity-list">
+                                                    <Table dataSource={pointList} columns={[
+                                                        {
+                                                            title: 'Môn học',
+                                                            dataIndex: 'subject',
+                                                            key: 'subject',
+                                                        },
+                                                        {
+                                                            title: 'Kết quả',
+                                                            dataIndex: 'result',
+                                                            key: 'result',
+                                                        },
+                                                    ]} />
                                                 </div>
 
                                             </div>

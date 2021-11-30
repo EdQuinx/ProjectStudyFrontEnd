@@ -43,11 +43,13 @@ export const api_question_group_get = `${question_service}/group/question/test`
 export const api_question_group = `${question_service}/group/question`
 export const api_question_system_gettest = `${question_service}/system/question/test`
 export const api_question_system = `${question_service}/system/question`
+export const api_question_detail = `${question_service}/system/question/server`
 
 
 export const history_service = "http://103.90.229.216:30107"
 export const api_history_oldtest = `${history_service}/test`
 export const api_history_result = `${history_service}/result/history`
+export const api_history_test = `${history_service}/test/history`
 
 export const upload_service = "http://103.90.229.216:30110"
 export const api_upload_chat = `${upload_service}/upload/messages`
