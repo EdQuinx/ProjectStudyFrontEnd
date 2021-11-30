@@ -57,7 +57,8 @@ const resetError = (state, action) => {
 
 const updateInfo = (state, action) => {
     return updateObject(state, {
-        info: action.info
+        info: action.info,
+        loading: false
     });
 } 
 

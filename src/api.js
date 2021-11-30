@@ -17,6 +17,7 @@ export const api_user_add_gudsub = `${user_service}/add/good/subject`
 export const api_user_add_badsub = `${user_service}/add/bad/subject`
 
 export const mail_service = "http://103.90.229.216:30108"
+export const api_mail_confirm = `${mail_service}/confirm-email`
 
 export const group_service = "http://103.90.229.216:30102"
 export const api_group_user = `${group_service}/group`
@@ -72,6 +73,7 @@ export const api_notify_read = `${notify_service}/notify/isRead`
 export const search_service = "http://103.90.229.216:30113"
 export const api_search_group = `${search_service}/search/group`
 export const api_search_users = `${search_service}/search/users`
+export const api_search_suggest = `${search_service}/suggest/group`
 
 export const list_sub = [
     "Toán",

@@ -39,6 +39,7 @@ const DashBoard = (props) => {
     const namesTraversed = [];
     let currentCountOfName = 1;
     let len = 0;
+
     const handleCreateGroup = (e) => {
         setFinding(true)
         axios.post(api.api_group_user,
@@ -238,6 +239,26 @@ const DashBoard = (props) => {
 
     const label_result = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10']
 
+    const handleGetSuggetGroup = () => {
+        setGroupsres([])
+        setFriendres([])
+        axios.get(api.api_search_suggest, {
+            params: {
+                username: props.username
+            }
+        })
+        .then(res => res.data)
+        .then(res => {
+            console.log(res)
+            if (typeof (res) === "object") {
+                if (Array.isArray(res)) setGroupsres(res)
+            } else {
+                message.error(res)
+            }
+        })
+        .catch(console.log)
+    }
+
     return (
         <React.Fragment>
             {
@@ -361,13 +382,16 @@ const DashBoard = (props) => {
                                                     </Form>
                                                 </Modal>
                                                 <Row gutter={16}>
-                                                    <Col className="gutter-row" span={8}>
+                                                    <Col className="gutter-row" span={6}>
+                                                        <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />} onClick={handleGetSuggetGroup} >Nhóm gợi ý</Button>
+                                                    </Col>
+                                                    <Col className="gutter-row" span={6}>
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<AppstoreAddOutlined />} onClick={() => setOcreateGr(true)} >Tạo nhóm mới</Button>
                                                     </Col>
-                                                    <Col className="gutter-row" span={8}>
+                                                    <Col className="gutter-row" span={6}>
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<FileSearchOutlined />} onClick={() => setOfindGr(true)} >Tìm nhóm</Button>
                                                     </Col>
-                                                    <Col className="gutter-row" span={8}>
+                                                    <Col className="gutter-row" span={6}>
                                                         <Button style={{ width: "100%", height: "50px", fontSize: "18px" }} icon={<UsergroupAddOutlined />} onClick={() => setOfindFr(true)} >Tìm bạn bè</Button>
                                                     </Col>
                                                 </Row>

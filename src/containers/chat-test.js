@@ -395,6 +395,14 @@ const ChatTest = (props) => {
                                                                                     <li style={{ paddingLeft: "10px" }}>
                                                                                         <UserOutlined className="glyphicon glyphicon-tag mr5" /> {val.username}
                                                                                         <Row>
+                                                                                            <Col span={24}>
+                                                                                                {
+                                                                                                    val.results !== "" ?
+                                                                                                        "Kết quả test: " + val.results.point
+                                                                                                        :
+                                                                                                        ""
+                                                                                                }
+                                                                                            </Col>
                                                                                             <Col span={8}><Button onClick={() => handleAcceptToGroup(val.username)}>OK</Button></Col>
                                                                                             <Col span={8}><Button onClick={() => handleDenyToGroup(val.username)}>Deny</Button></Col>
                                                                                             <Col span={8}><Button onClick={() => handleSetTargetTest(val.username)}>Test</Button></Col>
