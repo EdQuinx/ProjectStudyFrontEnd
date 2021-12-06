@@ -9,8 +9,7 @@ import PageHeader from '../components/pageheader'
 import { useAppContext } from '../state';
 import { Link, useLocation } from 'react-router-dom'
 
-import EquationEditor from "equation-editor-react";
-import MathQ from '../components/matheq';
+import Latex from 'react-latex';
 
 const IconText = ({ text }) => (
     <Space>
@@ -195,7 +194,7 @@ const AddSysQuest = (props) => {
                                                     }
                                                 >
                                                     <List.Item.Meta
-                                                        title={item.question}
+                                                        title={() => (<Latex>{item.question}</Latex>)}
                                                         description={`Đáp án đúng: ${item.correct}`}
                                                     />
                                                 </List.Item>
