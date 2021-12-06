@@ -8,6 +8,7 @@ import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 import { useAppContext } from '../state';
 import { Link, useLocation } from 'react-router-dom'
+import Latex from 'react-latex';
 
 const listData = [];
 for (let i = 0; i < 23; i++) {
@@ -206,7 +207,7 @@ const EditTest = (props) => {
                                                         }
                                                     >
                                                         <List.Item.Meta
-                                                            title={item.question}
+                                                            title={() => (<Latex>{item.question}</Latex>)}
                                                             description={`Đáp án đúng: ${item.correct}`}
                                                         />
                                                     </List.Item>
