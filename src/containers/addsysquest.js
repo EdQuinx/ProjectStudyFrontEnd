@@ -129,6 +129,9 @@ const AddSysQuest = (props) => {
                                                     }
                                                 </Select>
                                             </Form.Item>
+                                            <Form.Item>
+                                                <a href="https://lnv3i.csb.app/" target="_blank">Công thức toán học</a>
+                                            </Form.Item>
                                             <Form.Item name="question" label="Câu hỏi" rules={[{ required: true, message: 'Nhập câu hỏi' }]}>
                                                 <Input.TextArea />
                                             </Form.Item>

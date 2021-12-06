@@ -8,6 +8,7 @@ import PageHeader from '../components/pageheader'
 import { Link, useLocation } from 'react-router-dom'
 import moment from 'moment'
 import Countdown from 'react-countdown'
+import Latex from 'react-latex';
 
 const SystemTest = (props) => {
 
@@ -87,7 +88,7 @@ const SystemTest = (props) => {
                 handleCheckOldTest()
             }).catch(console.log)
         })
-        
+
     }
 
     const handleCheckOldTest = () => {
@@ -238,7 +239,7 @@ const SystemTest = (props) => {
                                                     <Form form={otestForm}
                                                         onFinish={handleContinueOldTest}
                                                     >
-                                                        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}  name="subject" label="Bài thi đang giở" rules={[{ required: true, message: 'Chọn bài thi' }]} >
+                                                        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} name="subject" label="Bài thi đang giở" rules={[{ required: true, message: 'Chọn bài thi' }]} >
                                                             <Select>
                                                                 {
                                                                     oldTest.map(val => (
@@ -310,9 +311,11 @@ const SystemTest = (props) => {
                                                     </div>
                                                     <div class="modal-header">
                                                         <Typography.Title level={3}>
-                                                            {
-                                                                testlist[index]?.question
-                                                            }
+                                                            <Latex>
+                                                                {
+                                                                    testlist[index]?.question
+                                                                }
+                                                            </Latex>
                                                         </Typography.Title>
                                                         {
                                                             testlist[index]?.image[0] !== "" ?
@@ -324,10 +327,10 @@ const SystemTest = (props) => {
                                                     <div class="modal-body">
                                                         <Radio.Group onChange={(e) => handleSetAnswer(testlist[index]?._id, e.target.value)} defaultValue={value} value={answer.find(x => x.questionId === testlist[index]?._id)?.answer}>
                                                             <Row>
-                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "A"} value="A">A. {testlist[index]?.A}</Radio></Col>
-                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "B"} value="B">B. {testlist[index]?.B}</Radio></Col>
-                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "C"} value="C">C. {testlist[index]?.C}</Radio></Col>
-                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "D"} value="D">D. {testlist[index]?.D}</Radio></Col>
+                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "A"} value="A">A. <Latex>{testlist[index]?.A}</Latex></Radio></Col>
+                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "B"} value="B">B. <Latex>{testlist[index]?.B}</Latex></Radio></Col>
+                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "C"} value="C">C. <Latex>{testlist[index]?.C}</Latex></Radio></Col>
+                                                                <Col span={12}><Radio checked={answer.find(x => x.questionId === testlist[index]?._id)?.answer === "D"} value="D">D. <Latex>{testlist[index]?.D}</Latex></Radio></Col>
                                                             </Row>
 
                                                         </Radio.Group>
