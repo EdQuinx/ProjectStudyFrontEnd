@@ -194,7 +194,7 @@ const AddSysQuest = (props) => {
                                                     }
                                                 >
                                                     <List.Item.Meta
-                                                        title={() => (<Latex>{item.question}</Latex>)}
+                                                        title={<Latex>{item.question}</Latex>}
                                                         description={`Đáp án đúng: ${item.correct}`}
                                                     />
                                                 </List.Item>
