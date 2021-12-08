@@ -6,6 +6,7 @@ import * as api from '../api';
 import * as actions from '../store/actions/auth';
 import PageHeader from '../components/pageheader'
 import { Link, useLocation } from 'react-router-dom'
+import Latext from 'react-latex';
 
 const HistoryTest = (props) => {
 
@@ -150,15 +151,15 @@ const HistoryTest = (props) => {
                                                                             }
                                                                         >
                                                                             <List.Item.Meta
-                                                                                title={<a>{item.question}</a>}
+                                                                                title={<Latext>{`${item.question}`}</Latext>}
                                                                                 description={
                                                                                     <Row>
                                                                                         <Col span={12}><b>Đáp án: {item.correct}</b></Col>
                                                                                         <Col span={12}><b>Bạn chọn: {item.answer}</b></Col>
-                                                                                        <Col span={12}>A. {item.A}</Col>
-                                                                                        <Col span={12}>B. {item.B}</Col>
-                                                                                        <Col span={12}>C. {item.C}</Col>
-                                                                                        <Col span={12}>D. {item.D}</Col>
+                                                                                        <Col span={12}>A. <Latext>{`${item.A}`}</Latext></Col>
+                                                                                        <Col span={12}>B. <Latext>{`${item.B}`}</Latext></Col>
+                                                                                        <Col span={12}>C. <Latext>{`${item.C}`}</Latext></Col>
+                                                                                        <Col span={12}>D. <Latext>{`${item.D}`}</Latext></Col>
                                                                                     </Row>
                                                                                 }
                                                                             />
