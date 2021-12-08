@@ -4529,6 +4529,11 @@
   dependencies:
     "delayed-stream" "0.0.5"
 
+"commander@^2.19.0":
+  "integrity" "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
+  "version" "2.20.3"
+
 "commander@^2.20.0":
   "integrity" "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
   "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
@@ -7417,6 +7422,11 @@
     "underscore.string" "~2.2.1"
     "which" "~1.0.5"
 
+"guppy-js@^2.0.0-beta.3":
+  "integrity" "sha512-ixHp5gBGGqYAnkBag8IdngnQABFcTWChDOnu9/ZI74a4TUpqWuxj3mXjplUV4KfR9bdInie8OMlB/reZQB2TwA=="
+  "resolved" "https://registry.npmjs.org/guppy-js/-/guppy-js-2.0.0-beta.3.tgz"
+  "version" "2.0.0-beta.3"
+
 "gzip-size@5.1.1":
   "integrity" "sha512-FNHi6mmoHvs1mxZAds4PpdCS6QG8B4C1krxJsMutgxl5t3+GlRTzzI3NEkifXx2pVsOvJdOGSmIgDhQ55FwdPA=="
   "resolved" "https://registry.npmjs.org/gzip-size/-/gzip-size-5.1.1.tgz"
@@ -9179,6 +9189,13 @@
   "integrity" "sha1-h75jSIZJy9ym9Tqzm+yczSNH9ZI="
   "resolved" "https://registry.npmjs.org/junk/-/junk-1.0.3.tgz"
   "version" "1.0.3"
+
+"katex@^0.10.2":
+  "integrity" "sha512-cQOmyIRoMloCoSIOZ1+gEwsksdJZ1EW4SWm3QzxSza/QsnZr6D4U1V9S4q+B/OLm2OQ8TCBecQ8MaIfnScI7cw=="
+  "resolved" "https://registry.npmjs.org/katex/-/katex-0.10.2.tgz"
+  "version" "0.10.2"
+  dependencies:
+    "commander" "^2.19.0"
 
 "killable@^1.0.1":
   "integrity" "sha512-LzqtLKlUwirEUyl/nicirVmNiPvYs7l5n8wOPP7fyJVpUPkvCnW/vuiXGpylGUlnPDnB7311rARzAt3Mhswpjg=="
@@ -12609,6 +12626,13 @@
   "integrity" "sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
+
+"react-latex@^2.0.0":
+  "integrity" "sha512-x17uDCfqBgR+5ZF/zplRCuHdEbX22CJlVipOqMUinRMoiOwh5fr3jbjD4zqVQ8pIs4AnF0BWPDR2S7Fyd8Snxw=="
+  "resolved" "https://registry.npmjs.org/react-latex/-/react-latex-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "katex" "^0.10.2"
 
 "react-mathjax@^1.0.1":
   "integrity" "sha512-+mjFcciZY3GQoqiQm3aRTyDjgBKuoaXpY+SCONX00jScuPpTKwnASeFMS5+pbTIzDf5zPT2Y9ZZfQ9U/d4CKtQ=="
