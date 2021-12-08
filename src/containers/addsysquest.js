@@ -161,7 +161,7 @@ const AddSysQuest = (props) => {
                             <div className="contentpanel">
 
                                 <div className="row">
-                                    <Spin spinning={loadingg}>
+                                    <Spin spinning={false}>
                                         <Modal visible={showaddquest} onCancel={() => setShowaddquest(false)}
                                             title="Thêm quest system"
                                             onOk={() => formAddQuest.submit()}
